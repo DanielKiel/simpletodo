@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Scopes\OrderByVersion;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -17,7 +18,7 @@ class ListsHistory extends Model
      * @var array
      */
     protected $fillable = [
-        'token', 'title', 'description', 'created', 'updated', 'lists_id', 'version'
+        'token', 'title', 'description', 'created', 'updated', 'lists_id', 'version', 'weight'
     ];
 
     /**
@@ -34,4 +35,11 @@ class ListsHistory extends Model
         'updated_at',
         'deleted_at'
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new OrderByVersion());
+    }
 }

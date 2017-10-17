@@ -23,6 +23,7 @@ class Core extends Migration
             $table->integer('created')->unsigned();
             $table->integer('updated')->unsigned();
             $table->integer('version');
+            $table->integer('weight')->default(0);
 
             $table->timestamps();
             $table->softDeletes();
@@ -41,6 +42,7 @@ class Core extends Migration
             $table->integer('created')->unsigned();
             $table->integer('updated')->unsigned();
             $table->integer('version');
+            $table->integer('weight')->default(0);
 
             $table->timestamps();
             $table->softDeletes();

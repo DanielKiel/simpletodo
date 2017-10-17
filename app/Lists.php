@@ -2,7 +2,10 @@
 
 namespace App;
 
+use App\Scopes\OrderByWeight;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Lists extends Model
@@ -17,7 +20,7 @@ class Lists extends Model
      * @var array
      */
     protected $fillable = [
-        'token', 'title', 'description', 'created', 'updated', 'version'
+        'token', 'title', 'description', 'created', 'updated', 'version', 'weight'
     ];
 
     /**
@@ -34,4 +37,29 @@ class Lists extends Model
         'updated_at',
         'deleted_at'
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new OrderByWeight());
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function history(): HasMany
+    {
+        return $this->hasMany(ListsHistory::class,'lists_id');
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $token
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeGrouped(\Illuminate\Database\Eloquent\Builder $query, string $token): Builder
+    {
+        return $query->where('token', $token);
+    }
 }
