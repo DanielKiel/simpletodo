@@ -133,4 +133,17 @@ class BasicCoreList extends TestCase
 
         $this->assertEquals('updatedTitleAgainAndAgain', $history->first()->title);
     }
+
+    public function testAPIResource()
+    {
+        $result = $this->post('/api/lists', [
+            'title' => 'my title'
+        ]);
+
+        $this->assertEquals(200, $result->getStatusCode());
+
+        $content = json_decode($result->getContent());
+
+        $this->assertEquals('my title', $content->title);
+    }
 }
