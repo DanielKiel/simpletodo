@@ -2,15 +2,15 @@
 
 namespace App;
 
-use App\Scopes\OrderByVersion;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ListsHistory extends Model
+class SharedLists extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'lists_history';
+    protected $table = 'shared_lists';
 
     /**
      * The attributes that are mass assignable.
@@ -18,7 +18,7 @@ class ListsHistory extends Model
      * @var array
      */
     protected $fillable = [
-        'token', 'title', 'description', 'created', 'updated', 'lists_id', 'version', 'weight', 'type', 'data'
+        'token', 'to'
     ];
 
     /**
@@ -36,14 +36,12 @@ class ListsHistory extends Model
         'deleted_at'
     ];
 
-    protected $casts = [
-        'data' => 'object'
-    ];
-
-    public static function boot()
+    public static function share(string $token, $userId)
     {
-        parent::boot();
-
-        static::addGlobalScope(new OrderByVersion());
+        return self::firstOrCreate([
+            'token' => $token,
+            'to' => $userId
+        ]);
     }
+
 }

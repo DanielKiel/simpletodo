@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Scopes\Accessable;
 use App\Scopes\OrderByWeight;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -20,7 +21,7 @@ class Lists extends Model
      * @var array
      */
     protected $fillable = [
-        'token', 'title', 'description', 'created', 'updated', 'version', 'weight'
+        'token', 'title', 'description', 'created', 'updated', 'version', 'weight', 'type', 'data'
     ];
 
     /**
@@ -38,11 +39,17 @@ class Lists extends Model
         'deleted_at'
     ];
 
+    protected $casts = [
+        'data' => 'object'
+    ];
+
     public static function boot()
     {
         parent::boot();
 
         static::addGlobalScope(new OrderByWeight());
+
+        static::addGlobalScope(new Accessable());
     }
 
     /**
@@ -55,11 +62,15 @@ class Lists extends Model
 
     /**
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $token
+     * @param mixed $token
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeGrouped(\Illuminate\Database\Eloquent\Builder $query, string $token): Builder
+    public function scopeGrouped(\Illuminate\Database\Eloquent\Builder $query, $token = null): Builder
     {
-        return $query->where('token', $token);
+        if (! empty($token)) {
+            return $query->where('token', $token);
+        }
+
+        return $query;
     }
 }

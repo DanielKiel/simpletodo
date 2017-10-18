@@ -24,7 +24,8 @@ abstract class TestCase extends BaseTestCase
         $this->admin = User::create([
             'name' => 'Admin',
             'email' => 'daniel.koch@publicare.de',
-            'password' => 'password'
+            'password' => bcrypt('password'),
+            'is_superadmin' => true
         ]);
     }
 }

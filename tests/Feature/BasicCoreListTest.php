@@ -7,7 +7,7 @@ use App\ListsHistory;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class BasicCoreList extends TestCase
+class BasicCoreListTest extends TestCase
 {
     public function setUp()
     {
@@ -145,5 +145,61 @@ class BasicCoreList extends TestCase
         $content = json_decode($result->getContent());
 
         $this->assertEquals('my title', $content->title);
+
+        //make an update
+        $result = $this->put('/api/lists/' . $content->id, [
+            'title' => 'my title updated'
+        ]);
+
+        $content = json_decode($result->getContent());
+
+        $this->assertEquals('my title updated', $content->title);
+
+        $this->assertEquals(1, Lists::all()->count());
+
+        //delete it
+        $result = $this->delete('/api/lists/' . $content->id);
+
+        $this->assertEquals(200, $result->getStatusCode());
+
+
+        //create some sources
+        Lists::create([
+            'title' => 'myTitle1',
+            'weight' => 1,
+            'token' => 'myGroup'
+        ]);
+
+        Lists::create([
+            'title' => 'myTitle2',
+            'weight' => 0,
+            'token' => 'myGroup'
+        ]);
+
+        Lists::create([
+            'title' => 'myTitle3',
+            'weight' => 0,
+            'token' => 'das ist mein test'
+        ]);
+
+        //getting all list entries by token
+        $result = $this->get('/api/lists?token=das%20ist%20mein%20test');
+
+        $this->assertEquals(200, $result->getStatusCode());
+
+        $content = json_decode($result->getContent());
+
+        $this->assertEquals(1, $content->total);
+
+        //now get all tokens
+        $unified = Lists::withoutGlobalScopes()->select(['token'])->groupBy('token')->get();
+
+        $result = $this->get('/api/tokens');
+
+        $this->assertEquals(200, $result->getStatusCode());
+
+        $content = json_decode($result->getContent());
+
+        $this->assertEquals($unified->count(), $content->total);
     }
 }

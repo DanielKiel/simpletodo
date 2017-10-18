@@ -3,19 +3,25 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ListsValidation as Request;
+use App\Http\Requests\ListsValidation as FormRequest;
 use App\Lists;
+use Illuminate\Http\Request;
 
 class ListsController extends Controller
 {
+    public function tokens()
+    {
+        return Lists::withoutGlobalScopes()->select('token')->groupBy('token')->paginate();
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return Lists::grouped($request->get('token'))->paginate();
     }
 
     /**
@@ -34,22 +40,24 @@ class ListsController extends Controller
      * @param  \App\Http\Requests\ListsValidation  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(FormRequest $request)
     {
         $this->authorize('create', Lists::class);
 
-        return Lists::create($request->input());
+        return Lists::create($request->input())->fresh();
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  Lists $list
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Lists $list)
     {
-        //
+        $this->authorize('view', $list);
+
+        return $list;
     }
 
     /**
@@ -67,22 +75,32 @@ class ListsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\ListsValidation  $request
-     * @param  int  $id
+     * @param  Lists $list
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(FormRequest $request, Lists $list)
     {
-        //
+        $this->authorize('update', $list);
+
+        $list->update($request->input());
+
+        return $list->fresh();
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  Lists $list
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Lists $list)
     {
-        //
+        $this->authorize('delete', $list);
+
+        $result = $list->delete();
+
+        return  [
+            'success' => (bool) $result
+        ];
     }
 }

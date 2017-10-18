@@ -2,13 +2,12 @@
 
 namespace App\Policies;
 
+use App\Core\Policies\SuperAdminPolicy;
 use App\User;
 use App\Lists;
-use Illuminate\Auth\Access\HandlesAuthorization;
 
-class ListsPolicy
+class ListsPolicy extends SuperAdminPolicy
 {
-    use HandlesAuthorization;
 
     /**
      * Determine whether the user can view the lists.
@@ -19,7 +18,7 @@ class ListsPolicy
      */
     public function view(User $user, Lists $lists)
     {
-        //
+        return true;
     }
 
     /**

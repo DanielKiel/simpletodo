@@ -26,6 +26,11 @@ class Lists
         }
 
         $list->version = 1;
+
+        //cause when calling Lists::create([]) the configured default will not work on updating and writing history
+        if (empty($list->type)) {
+            $list->type = 'default';
+        }
     }
 
     public function updating(Object $list)
