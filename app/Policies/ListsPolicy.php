@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Core\Policies\SuperAdminPolicy;
+use App\SharedLists;
 use App\User;
 use App\Lists;
 
@@ -18,7 +19,7 @@ class ListsPolicy extends SuperAdminPolicy
      */
     public function view(User $user, Lists $lists)
     {
-        return true;
+        return $this->decideAccess($user, $lists);
     }
 
     /**
@@ -29,7 +30,7 @@ class ListsPolicy extends SuperAdminPolicy
      */
     public function create(User $user)
     {
-        return true;
+        return $this->decideAccess($user, $lists);
     }
 
     /**
@@ -41,7 +42,7 @@ class ListsPolicy extends SuperAdminPolicy
      */
     public function update(User $user, Lists $lists)
     {
-        return true;
+        return $this->decideAccess($user, $lists);
     }
 
     /**
@@ -53,6 +54,19 @@ class ListsPolicy extends SuperAdminPolicy
      */
     public function delete(User $user, Lists $lists)
     {
-        return true;
+        return $this->decideAccess($user, $lists);
+    }
+
+    private function decideAccess(User $user, Lists $lists)
+    {
+        if ($lists->created === $user->id) {
+            return true;
+        }
+
+        if ($lists->updated === $user->id) {
+            return true;
+        }
+
+        return SharedLists::where('to', $user->id)->where('token', $lists->token)->exists();
     }
 }

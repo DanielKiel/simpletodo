@@ -64,6 +64,70 @@ class SharedListsTest extends TestCase
         $this->assertEquals(1, Lists::all()->count());
     }
 
+    public function testWebAccess()
+    {
+        //user A creates some points
+        $this->actingAs($this->user_A);
+
+        $list1 = Lists::create([
+            'title' => 'myTitle1',
+            'weight' => 1,
+            'token' => 'myGroup'
+        ]);
+
+        $list2 = Lists::create([
+            'title' => 'myTitle2',
+            'weight' => 0,
+            'token' => 'myGroup'
+        ]);
+
+        //userB now wants to see one of them
+        $this->actingAs($this->user_B);
+
+        $result = $this->get('/api/lists/' . $list1->id);
+
+        $this->assertEquals(404, $result->getStatusCode());
+
+        //userB now wants to edit one of them
+        $this->actingAs($this->user_B);
+
+        $result = $this->put('/api/lists/' . $list1->id,[
+            'title' => 'fromUserB'
+        ]);
+
+        $this->assertEquals(404, $result->getStatusCode());
+
+        //userB now wants to delete one of them
+        $this->actingAs($this->user_B);
+
+        $result = $this->delete('/api/lists/' . $list1->id);
+
+        $this->assertEquals(404, $result->getStatusCode());
+
+        //now make it shared
+        SharedLists::share('myGroup', $this->user_B->id);
+
+        //reading
+        $result = $this->get('/api/lists/' . $list1->id);
+
+        $this->assertEquals(200, $result->getStatusCode());
+
+        //so edit is possible
+        $result = $this->put('/api/lists/' . $list1->id,[
+            'title' => 'fromUserB'
+        ]);
+
+        $this->assertEquals(200, $result->getStatusCode());
+
+        //so delete is possible
+        $this->assertEmpty($list1->fresh()->deleted_at);
+        $result = $this->delete('/api/lists/' . $list1->id);
+
+        $this->assertEquals(200, $result->getStatusCode());
+
+        $this->assertNotEmpty($list1->fresh()->deleted_at);
+    }
+
     public function setupUserScenario()
     {
         $this->user_A = User::create([
