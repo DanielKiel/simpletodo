@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use App\Tenants;
+use App\Tenant;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -22,7 +22,7 @@ abstract class TestCase extends BaseTestCase
 
     public function setupUser()
     {
-        $tenant = Tenants::create(['name' => 'Demo']);
+        $tenant = Tenant::create(['name' => 'Demo']);
 
         $this->admin = User::create([
             'name' => 'Admin',

@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\User;
+use App\Tenants;
 
 class CoreSetup extends Seeder
 {
@@ -12,10 +13,15 @@ class CoreSetup extends Seeder
      */
     public function run()
     {
+        $tenant = Tenants::create([
+            'name' => 'MainBU'
+        ]);
+
         User::create([
             'name' => 'admin',
             'email' => 'dk.projects.manager@gmail.com',
-            'password' => bcrypt('admin')
+            'password' => bcrypt('admin'),
+            'tenants_id' => $tenant->id
         ]);
     }
 }

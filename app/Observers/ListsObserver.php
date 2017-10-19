@@ -13,7 +13,7 @@ use App\Lists as Object;
 use App\ListsHistory;
 use Illuminate\Support\Facades\Auth;
 
-class Lists
+class ListsObserver
 {
     public function creating(Object $list)
     {

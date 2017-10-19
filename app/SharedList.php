@@ -6,7 +6,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class SharedLists extends Model
+class SharedList extends Model
 {
     use SoftDeletes;
 

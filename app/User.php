@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -34,5 +35,10 @@ class User extends Authenticatable
     public function isSuperAdmin()
     {
         return $this->is_superadmin;
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class, 'by');
     }
 }

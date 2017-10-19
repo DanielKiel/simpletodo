@@ -3,8 +3,8 @@
 namespace Tests\Feature;
 
 use App\Lists;
-use App\SharedLists;
-use App\Tenants;
+use App\SharedList;
+use App\Tenant;
 use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -51,7 +51,7 @@ class SharedListsTest extends TestCase
 
         $this->assertEquals(0, Lists::all()->count());
 
-        SharedLists::share('myGroup', $this->user_A->id);
+        SharedList::share('myGroup', $this->user_A->id);
 
         $this->assertEquals(2, Lists::all()->count());
 
@@ -60,7 +60,7 @@ class SharedListsTest extends TestCase
 
         $this->assertEquals(0, Lists::all()->count());
 
-        SharedLists::share('das ist mein test', $this->user_B->id);
+        SharedList::share('das ist mein test', $this->user_B->id);
 
         $this->assertEquals(1, Lists::all()->count());
     }
@@ -106,7 +106,7 @@ class SharedListsTest extends TestCase
         $this->assertEquals(404, $result->getStatusCode());
 
         //now make it shared
-        SharedLists::share('myGroup', $this->user_B->id);
+        SharedList::share('myGroup', $this->user_B->id);
 
         //reading
         $result = $this->get('/api/lists/' . $list1->id);
@@ -131,7 +131,7 @@ class SharedListsTest extends TestCase
 
     public function setupUserScenario()
     {
-        $tenant = Tenants::create(['name' => 'Demo']);
+        $tenant = Tenant::create(['name' => 'Demo']);
 
         $this->user_A = User::create([
             'name' => 'UserA',

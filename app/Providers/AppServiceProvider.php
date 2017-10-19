@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Comment;
 use App\Lists;
+use App\Observers\CommentsObserver;
+use App\Observers\ListsObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -14,7 +17,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Lists::observe(\App\Observers\Lists::class);
+        Lists::observe(ListsObserver::class);
+        Comment::observe(CommentsObserver::class);
     }
 
     /**

@@ -9,7 +9,7 @@
 namespace App\Scopes;
 
 
-use App\SharedLists;
+use App\SharedList;
 use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -28,7 +28,7 @@ class Accessable implements Scope
     {
         $currentId = Auth::id();
         //first of all get a list of available tokens by authenticated user
-        $tokens = SharedLists::where('to', $currentId)->select('token')->get()->toArray();
+        $tokens = SharedList::where('to', $currentId)->select('token')->get()->toArray();
 
         return $builder->where(function($query) use($tokens, $currentId) {
             $query->whereIn('token', $tokens)

@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Core\Policies\SuperAdminPolicy;
-use App\SharedLists;
+use App\SharedList;
 use App\User;
 use App\Lists;
 
@@ -67,6 +67,6 @@ class ListsPolicy extends SuperAdminPolicy
             return true;
         }
 
-        return SharedLists::where('to', $user->id)->where('token', $lists->token)->exists();
+        return SharedList::where('to', $user->id)->where('token', $lists->token)->exists();
     }
 }

@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Tenants extends Model
+class Tenant extends Model
 {
     use SoftDeletes;
 

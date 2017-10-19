@@ -60,6 +60,11 @@ class Lists extends Model
         return $this->hasMany(ListsHistory::class,'lists_id');
     }
 
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class, 'lists_id');
+    }
+
     /**
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @param mixed $token

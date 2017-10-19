@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Tenants;
+use App\Tenant;
 use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -18,7 +18,7 @@ class BasicUserTest extends TestCase
     {
         $this->assertTrue($this->admin->isSuperAdmin());
 
-        $tenant = Tenants::create(['name' => 'Demo']);
+        $tenant = Tenant::create(['name' => 'Demo']);
 
         //test default is false
         $user = User::create([
