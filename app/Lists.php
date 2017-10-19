@@ -21,7 +21,7 @@ class Lists extends Model
      * @var array
      */
     protected $fillable = [
-        'token', 'title', 'description', 'created', 'updated', 'version', 'weight', 'type', 'data'
+        'token', 'title', 'description', 'created', 'updated', 'version', 'weight', 'type', 'data', 'tenants_id'
     ];
 
     /**

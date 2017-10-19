@@ -21,6 +21,8 @@ class Lists
 
         $list->updated = Auth::id();
 
+        $list->tenants_id = Auth::user()->tenants_id;
+
         if (empty($list->token)) {
             $list->token = uniqid();
         }

@@ -92,7 +92,7 @@ class Core extends Migration
             });
         }
         catch (\Exception $e) {
-            dump($e->getTraceAsString());
+            dump($e->getMessage());
         }
 
     }
@@ -121,7 +121,7 @@ class Core extends Migration
             });
         }
         catch (\Exception $e) {
-            dump($e->getTraceAsString());
+            dump($e->getMessage());
         }
 
         Schema::dropIfExists('lists_history');
