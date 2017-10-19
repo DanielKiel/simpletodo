@@ -9,13 +9,16 @@
 namespace App\Observers;
 
 
-use App\Lists as Object;
+use App\Lists;
 use App\ListsHistory;
+use App\Notifications\ListUpdated;
+use App\SharedList;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 
 class ListsObserver
 {
-    public function creating(Object $list)
+    public function creating(Lists $list)
     {
         $list->created = Auth::id();
 
@@ -35,7 +38,7 @@ class ListsObserver
         }
     }
 
-    public function updating(Object $list)
+    public function updating(Lists $list)
     {
         $list->updated = Auth::id();
 
@@ -53,5 +56,16 @@ class ListsObserver
         array_forget($original, 'id');
 
         ListsHistory::create($original);
+    }
+
+    public function updated(Lists $list)
+    {
+        $users = SharedList::getFollowers($list->token);
+
+        if ($users->isEmpty()) {
+            return;
+        }
+
+        Notification::send($users, new ListUpdated($list));
     }
 }

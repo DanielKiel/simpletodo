@@ -18,7 +18,7 @@ class SharedList extends Model
      * @var array
      */
     protected $fillable = [
-        'token', 'to'
+        'token', 'to', 'following'
     ];
 
     /**
@@ -36,12 +36,27 @@ class SharedList extends Model
         'deleted_at'
     ];
 
+    protected $casts = [
+        'following' => 'boolean'
+    ];
+
     public static function share(string $token, $userId)
     {
         return self::firstOrCreate([
             'token' => $token,
             'to' => $userId
         ]);
+    }
+
+    /**
+     * @param string $token
+     * @return mixed
+     */
+    public static function getFollowers(string $token)
+    {
+        $userIds = self::where('token', $token)->select('to')->get();
+
+        return User::whereIn('id', $userIds->toArray())->get();
     }
 
 }

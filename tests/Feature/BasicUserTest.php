@@ -25,9 +25,14 @@ class BasicUserTest extends TestCase
             'name' => 'Admin',
             'email' => 'dummy@publicare.de',
             'password' => bcrypt('password'),
-            'tenants_id' => $tenant->id
+            'tenants_id' => $tenant->id,
+            'settings' => [
+                'enableNotifications' => true
+            ]
         ]);
 
         $this->assertFalse($user->fresh()->isSuperAdmin());
+
+        $this->assertTrue($user->profile('enableNotifications'));
     }
 }

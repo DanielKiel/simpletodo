@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'is_superadmin', 'tenants_id'
+        'name', 'email', 'password', 'is_superadmin', 'tenants_id', 'settings'
     ];
 
     /**
@@ -29,7 +29,8 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'is_superadmin' => 'boolean'
+        'is_superadmin' => 'boolean',
+        'settings' => 'object'
     ];
 
     public function isSuperAdmin()
@@ -40,5 +41,27 @@ class User extends Authenticatable
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class, 'by');
+    }
+
+    /**
+     * @param null $setting
+     * @param null $default
+     * @return mixed|null
+     */
+    public function profile($setting = null, $default = null)
+    {
+        if (is_string($setting) && $setting !== '') {
+            if (! is_object($this->settings)) {
+                return $default;
+            }
+
+            if (property_exists($this->settings, $setting)) {
+                return $this->settings->{$setting};
+            }
+
+            return $default;
+        }
+
+        return $this->settings;
     }
 }

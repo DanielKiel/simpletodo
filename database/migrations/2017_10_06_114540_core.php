@@ -66,6 +66,7 @@ class Core extends Migration
             $table->string('token');
 
             $table->integer('to')->unsigned();
+            $table->boolean('following')->default('0');
 
             $table->timestamps();
             $table->softDeletes();
