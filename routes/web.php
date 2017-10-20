@@ -18,3 +18,12 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+
+Route::namespace('Backend')
+    ->prefix('backend')
+    ->middleware('auth')->group( function() {
+        Route::get('/lists', 'Dashboard@tokens')->name('backend.tokens');
+
+        Route::get('/list/{token}', 'Dashboard@viewList')->name('backend.list');
+});

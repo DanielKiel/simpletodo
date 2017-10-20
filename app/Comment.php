@@ -41,6 +41,10 @@ class Comment extends Model
         'position' => 'object'
     ];
 
+    protected $with = [
+        'byUser'
+    ];
+
     public static function boot()
     {
         parent::boot();

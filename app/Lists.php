@@ -43,6 +43,10 @@ class Lists extends Model
         'data' => 'object'
     ];
 
+    protected $with = [
+        'comments', 'history'
+    ];
+
     public static function boot()
     {
         parent::boot();

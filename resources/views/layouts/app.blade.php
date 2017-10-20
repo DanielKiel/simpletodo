@@ -12,6 +12,8 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap-theme.min.css') }}" rel="stylesheet">
+
 </head>
 <body>
     <div id="app">
@@ -36,7 +38,11 @@
                 <div class="collapse navbar-collapse" id="app-navbar-collapse">
                     <!-- Left Side Of Navbar -->
                     <ul class="nav navbar-nav">
-                        &nbsp;
+                        @guest
+
+                        @else
+                            <li> <a href="{{ route('backend.tokens')  }}">Listen</a></li>
+                        @endguest
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -71,7 +77,15 @@
             </div>
         </nav>
 
-        @yield('content')
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    @yield('content')
+                </div>
+
+            </div>
+        </div>
+
     </div>
 
     <!-- Scripts -->

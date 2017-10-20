@@ -10,7 +10,15 @@ window._ = require('lodash');
 try {
     window.$ = window.jQuery = require('jquery');
 
-    require('bootstrap-sass');
+    require('bootstrap-sass')
+
+
+    // setTimeout(function() {
+    //     // after 1000 ms we add the class animated to the login/register card
+    //     $('.card').removeClass('card-hidden');
+    //     $('blockquote').removeClass('block-hidden');
+    // }, 700)
+
 } catch (e) {}
 
 /**
@@ -51,3 +59,5 @@ if (token) {
 //     broadcaster: 'pusher',
 //     key: 'your-pusher-key'
 // });
+
+import 'array.prototype.move';

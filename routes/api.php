@@ -17,6 +17,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth')->resource('lists', 'API\ListsController');
+Route::middleware(['api','auth:api'])->resource('lists', 'API\ListsController');
 
-Route::middleware('auth')->get('/tokens', 'API\ListsController@tokens');
+Route::middleware(['api','auth:api'])->get('/tokens', 'API\ListsController@tokens')->name('api.tokens');
