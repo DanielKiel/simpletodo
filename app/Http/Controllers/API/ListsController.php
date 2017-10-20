@@ -9,9 +9,13 @@ use Illuminate\Http\Request;
 
 class ListsController extends Controller
 {
-    public function tokens()
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function tokens(Request $request)
     {
-        return Lists::withoutGlobalScopes()->select('token')->groupBy('token')->paginate();
+        return Lists::withoutGlobalScopes()->select('token')->groupBy('token')->paginate($request->input('per_page', 15));
     }
 
     /**
@@ -21,7 +25,7 @@ class ListsController extends Controller
      */
     public function index(Request $request)
     {
-        return Lists::grouped($request->get('token'))->paginate();
+        return Lists::grouped($request->get('token'))->paginate($request->input('per_page', 15));
     }
 
     /**

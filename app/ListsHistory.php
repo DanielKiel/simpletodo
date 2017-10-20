@@ -40,6 +40,10 @@ class ListsHistory extends Model
         'data' => 'object'
     ];
 
+    protected $with = [
+        //'created', 'updated'
+    ];
+
     public static function boot()
     {
         parent::boot();

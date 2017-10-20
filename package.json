@@ -14,11 +14,15 @@
         "bootstrap-sass": "^3.3.7",
         "cross-env": "^5.0.1",
         "jquery": "^3.1.1",
+        "laravel-materialize": "^1.1.0",
         "laravel-mix": "^1.0",
         "lodash": "^4.17.4",
         "vue": "^2.1.10"
     },
     "dependencies": {
-        "array.prototype.move": "0.0.4"
+        "array.prototype.move": "0.0.4",
+        "diff": "^3.4.0",
+        "vue-material": "^0.7.5",
+        "vue-mdc": "0.0.10"
     }
 }
