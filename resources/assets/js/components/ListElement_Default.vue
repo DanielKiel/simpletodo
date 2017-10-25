@@ -1,15 +1,15 @@
 <template>
      <md-list-item md-expand-multiple>
         <md-icon>whatshot</md-icon>
-        <span>{{el.title}}</span>
+        <span>{{data.title}}</span>
 
         <md-list-expand>
 
             <md-card>
 
               <md-card-header>
-                <div class="md-title">{{el.title}}</div>
-                <div class="md-subhead">Version: {{el.version}} / Erstellt: {{el.created_at}} <span v-if="el.version > 1">/ Bearbeitet: {{el.updated_at}}</span></div>
+                <div class="md-title">{{data.title}}</div>
+                <div class="md-subhead">Version: {{data.version}} / Erstdatalt: {{data.created_at}} <span v-if="data.version > 1">/ Bearbeitet: {{data.updated_at}}</span></div>
               </md-card-header>
 
 
@@ -36,11 +36,11 @@
                     <md-layout md-flex="60">
 
                         <div v-if="show === 'description'" v-on:mouseup="getHighlighted()" class="description">
-                            <div v-html="description" :id="'desc_' + el.id"></div>
+                            <div v-html="data.description" :id="'desc_' + data.id"></div>
                         </div>
 
                         <div v-if="show === 'history'">
-                            <md-button v-for="(history, index) in el.history" :disabled="showHistory.id === history.id" class="md-fab md-clean md-mini" @click="setHistoryDisplay(index, history)">
+                            <md-button v-for="(history, index) in data.history" :disabled="showHistory.id === history.id" class="md-fab md-clean md-mini" @click="setHistoryDisplay(index, history)">
                                   {{history.version}}
                             </md-button>
                             <div v-if="historyDisplay">
@@ -49,7 +49,7 @@
                         </div>
 
                         <div v-if="show === 'edit'" class="md-flex-100">
-                            <list-form :el="el" @update="onElementUpdate" method="PUT" :action="'/api/lists/' + el.id"></list-form>
+                            <list-form :el="data" @update="onElementUpdate" method="PUT" :action="'/api/lists/' + data.id"></list-form>
                         </div>
 
                     </md-layout>
@@ -58,7 +58,10 @@
                         <md-subheader>Kommentare</md-subheader>
 
                         <md-card class="md-flex-100" md-theme="comment_card" v-if="comments.length === 0">
-                            (Keine Kommentare vorhanden)
+                            <md-card-content>
+                                <div class="md-caption">(Keine Kommentare vorhanden)</div>
+                            </md-card-content>
+
                         </md-card>
 
                         <md-card class="md-flex-100" md-theme="comment_card" v-for="comment in comments">
@@ -68,7 +71,7 @@
                           </md-card-header>
 
                           <md-card-content>
-                            {{comment.content}}
+                            <div class="md-body-1">{{comment.content}}</div>
                           </md-card-content>
                           <md-card-actions v-if="show === 'description'">
                             <md-button @click="getCommentedMark(comment)"><md-icon>search</md-icon></md-button>
@@ -112,8 +115,8 @@
                 showIndex: 0,
                 historyDisplay:true,
                 allComments: this.el.comments,
-                comments: [],
-                description: this.el.description
+                data: this.el,
+                comments: []
             }
         },
 
@@ -167,7 +170,11 @@
                 }
             },
             onElementUpdate(data) {
-                this.el = data
+                let el = this.data
+
+                this.data.history.unshift(el)
+
+                this.data = data
             },
 
             onCommentCreated(data) {

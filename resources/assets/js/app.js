@@ -24,7 +24,7 @@ Vue.material.registerTheme({
         background: 'white'
     },
     nav: {
-        primary: 'black'
+        primary: 'white'
     },
     comment_card: {
         background: 'white'

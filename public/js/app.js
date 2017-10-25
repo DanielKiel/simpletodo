@@ -13820,7 +13820,7 @@ Vue.material.registerTheme({
         background: 'white'
     },
     nav: {
-        primary: 'black'
+        primary: 'white'
     },
     comment_card: {
         background: 'white'
@@ -46009,7 +46009,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -46083,7 +46083,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     methods: {
@@ -46109,56 +46108,43 @@ var render = function() {
         { staticClass: "md-flex-100", attrs: { "md-theme": "nav" } },
         [
           _c(
-            "md-button",
-            {
-              staticClass: "md-icon-button",
-              on: { click: _vm.toggleLeftSidenav }
-            },
-            [_c("md-icon", [_vm._v("menu")])],
-            1
-          ),
-          _vm._v(" "),
-          _c("h2", { staticClass: "md-title" }, [_vm._v("My App")]),
-          _vm._v(" "),
-          _c(
-            "md-menu",
+            "div",
+            { staticClass: "md-toolbar-container" },
             [
-              _c("md-button", { attrs: { "md-menu-trigger": "" } }, [
-                _vm._v("Bottom Right")
-              ]),
+              _c(
+                "md-button",
+                {
+                  staticClass: "md-icon-button",
+                  on: { click: _vm.toggleLeftSidenav }
+                },
+                [_c("md-icon", [_vm._v("menu")])],
+                1
+              ),
+              _vm._v(" "),
+              _c("span", { staticStyle: { flex: "1" } }),
               _vm._v(" "),
               _c(
-                "md-menu-content",
-                [
-                  _c("md-menu-item", [_vm._v("My Item 1")]),
-                  _vm._v(" "),
-                  _c("md-menu-item", [_vm._v("My Item 2")]),
-                  _vm._v(" "),
-                  _c("md-menu-item", [_vm._v("My Item 3")])
-                ],
+                "md-button",
+                { staticClass: "md-icon-button" },
+                [_c("md-icon", [_vm._v("search")])],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "md-button",
+                { staticClass: "md-icon-button" },
+                [_c("md-icon", [_vm._v("filter_list")])],
                 1
               )
             ],
             1
           )
-        ],
-        1
+        ]
       ),
       _vm._v(" "),
       _c(
         "md-sidenav",
-        {
-          ref: "leftSidenav",
-          staticClass: "md-left",
-          on: {
-            open: function($event) {
-              _vm.open("Left")
-            },
-            close: function($event) {
-              _vm.close("Left")
-            }
-          }
-        },
+        { ref: "leftSidenav", staticClass: "md-left" },
         [
           _c("md-toolbar", { staticClass: "md-large" }, [
             _c("div", { staticClass: "md-toolbar-container" }, [
@@ -47666,6 +47652,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['el'],
@@ -47676,8 +47665,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             showIndex: 0,
             historyDisplay: true,
             allComments: this.el.comments,
-            comments: [],
-            description: this.el.description
+            data: this.el,
+            comments: []
         };
     },
     created: function created() {
@@ -47734,7 +47723,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
         },
         onElementUpdate: function onElementUpdate(data) {
-            this.el = data;
+            var el = this.data;
+            //delete el.comments
+            //delete el.history
+            console.log(el, this.data);
+            this.data.history.unshift(el);
+
+            this.data = data;
         },
         onCommentCreated: function onCommentCreated(data) {
             this.allComments.push(data);
@@ -47831,7 +47826,7 @@ var render = function() {
     [
       _c("md-icon", [_vm._v("whatshot")]),
       _vm._v(" "),
-      _c("span", [_vm._v(_vm._s(_vm.el.title))]),
+      _c("span", [_vm._v(_vm._s(_vm.data.title))]),
       _vm._v(" "),
       _c(
         "md-list-expand",
@@ -47841,20 +47836,20 @@ var render = function() {
             [
               _c("md-card-header", [
                 _c("div", { staticClass: "md-title" }, [
-                  _vm._v(_vm._s(_vm.el.title))
+                  _vm._v(_vm._s(_vm.data.title))
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "md-subhead" }, [
                   _vm._v(
                     "Version: " +
-                      _vm._s(_vm.el.version) +
-                      " / Erstellt: " +
-                      _vm._s(_vm.el.created_at) +
+                      _vm._s(_vm.data.version) +
+                      " / Erstdatalt: " +
+                      _vm._s(_vm.data.created_at) +
                       " "
                   ),
-                  _vm.el.version > 1
+                  _vm.data.version > 1
                     ? _c("span", [
-                        _vm._v("/ Bearbeitet: " + _vm._s(_vm.el.updated_at))
+                        _vm._v("/ Bearbeitet: " + _vm._s(_vm.data.updated_at))
                       ])
                     : _vm._e()
                 ])
@@ -47989,9 +47984,9 @@ var render = function() {
                               },
                               [
                                 _c("div", {
-                                  attrs: { id: "desc_" + _vm.el.id },
+                                  attrs: { id: "desc_" + _vm.data.id },
                                   domProps: {
-                                    innerHTML: _vm._s(_vm.description)
+                                    innerHTML: _vm._s(_vm.data.description)
                                   }
                                 })
                               ]
@@ -48002,7 +47997,7 @@ var render = function() {
                           ? _c(
                               "div",
                               [
-                                _vm._l(_vm.el.history, function(
+                                _vm._l(_vm.data.history, function(
                                   history,
                                   index
                                 ) {
@@ -48056,9 +48051,9 @@ var render = function() {
                               [
                                 _c("list-form", {
                                   attrs: {
-                                    el: _vm.el,
+                                    el: _vm.data,
                                     method: "PUT",
-                                    action: "/api/lists/" + _vm.el.id
+                                    action: "/api/lists/" + _vm.data.id
                                   },
                                   on: { update: _vm.onElementUpdate }
                                 })
@@ -48082,10 +48077,13 @@ var render = function() {
                                   attrs: { "md-theme": "comment_card" }
                                 },
                                 [
-                                  _vm._v(
-                                    "\n                        (Keine Kommentare vorhanden)\n                    "
-                                  )
-                                ]
+                                  _c("md-card-content", [
+                                    _c("div", { staticClass: "md-caption" }, [
+                                      _vm._v("(Keine Kommentare vorhanden)")
+                                    ])
+                                  ])
+                                ],
+                                1
                               )
                             : _vm._e(),
                           _vm._v(" "),
@@ -48114,11 +48112,9 @@ var render = function() {
                                 ]),
                                 _vm._v(" "),
                                 _c("md-card-content", [
-                                  _vm._v(
-                                    "\n                        " +
-                                      _vm._s(comment.content) +
-                                      "\n                      "
-                                  )
+                                  _c("div", { staticClass: "md-body-1" }, [
+                                    _vm._v(_vm._s(comment.content))
+                                  ])
                                 ]),
                                 _vm._v(" "),
                                 _vm.show === "description"
