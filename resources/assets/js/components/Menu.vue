@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <md-toolbar md-theme="nav">
+        <md-toolbar md-theme="nav" class="md-flex-100">
             <md-button class="md-icon-button" @click="toggleLeftSidenav">
               <md-icon>menu</md-icon>
             </md-button>
@@ -18,11 +18,6 @@
               </md-menu-content>
             </md-menu>
         </md-toolbar>
-
-
-
-
-
 
         <md-sidenav class="md-left" ref="leftSidenav" @open="open('Left')" @close="close('Left')">
             <md-toolbar class="md-large">

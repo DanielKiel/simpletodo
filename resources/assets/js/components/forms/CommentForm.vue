@@ -4,7 +4,7 @@
         <fieldset><legend>Neuen Kommentar anlegen</legend>
             <md-input-container>
                 <label>Kommentar</label>
-                <md-textarea v-model="el.content"></md-textarea>
+                <md-textarea v-model="obj.content"></md-textarea>
             </md-input-container>
 
             <md-button @click="onFormSubmit()">
@@ -25,12 +25,14 @@
         ],
         data () {
             return {
-                errors: []
+                errors: [],
+                obj: this.el
             }
         },
-
-        created() {
-
+        watch: {
+            'obj.position': function(newVal, oldVal) {
+               console.log(newVal)
+            }
         },
 
         methods: {
@@ -38,7 +40,7 @@
                 axios({
                     method: this.method,
                     url: this.action,
-                    data: this.el
+                    data: this.obj
                 }).then((response) => {
                     // success
                     this.errors = []

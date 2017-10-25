@@ -9,14 +9,13 @@ require('./bootstrap');
 
 
 window.Vue = require('vue');
+window.Mark = require('mark.js');
 
 let VueMaterial = require('vue-material');
-
 
 window.events = new Vue();
 
 Vue.use(VueMaterial);
-
 
 Vue.material.registerTheme({
     default: {
@@ -28,7 +27,7 @@ Vue.material.registerTheme({
         primary: 'black'
     },
     comment_card: {
-        background: 'pink'
+        background: 'white'
     }
 });
 

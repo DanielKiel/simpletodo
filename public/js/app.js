@@ -165,7 +165,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(47)
+var listToStyles = __webpack_require__(48)
 
 /*
 type StyleObject = {
@@ -13788,7 +13788,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(15);
-module.exports = __webpack_require__(110);
+module.exports = __webpack_require__(111);
 
 
 /***/ }),
@@ -13805,8 +13805,9 @@ module.exports = __webpack_require__(110);
 __webpack_require__(16);
 
 window.Vue = __webpack_require__(12);
+window.Mark = __webpack_require__(43);
 
-var VueMaterial = __webpack_require__(43);
+var VueMaterial = __webpack_require__(44);
 
 window.events = new Vue();
 
@@ -13822,7 +13823,7 @@ Vue.material.registerTheme({
         primary: 'black'
     },
     comment_card: {
-        background: 'pink'
+        background: 'white'
     }
 });
 
@@ -13840,25 +13841,25 @@ window.flash = function (message) {
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('vmenu', __webpack_require__(44));
-Vue.component('flash', __webpack_require__(50));
-Vue.component('list', __webpack_require__(55));
-Vue.component('vlink', __webpack_require__(60));
-Vue.component('grid', __webpack_require__(65));
-Vue.component('vdialog', __webpack_require__(70));
+Vue.component('vmenu', __webpack_require__(45));
+Vue.component('flash', __webpack_require__(51));
+Vue.component('list', __webpack_require__(56));
+Vue.component('vlink', __webpack_require__(61));
+Vue.component('grid', __webpack_require__(66));
+Vue.component('vdialog', __webpack_require__(71));
 
-Vue.component('list-el-default', __webpack_require__(75));
-Vue.component('list-form', __webpack_require__(80));
+Vue.component('list-el-default', __webpack_require__(76));
+Vue.component('list-form', __webpack_require__(81));
 
-Vue.component('comment-form', __webpack_require__(85));
+Vue.component('comment-form', __webpack_require__(86));
 
-Vue.component('diff-history', __webpack_require__(90));
+Vue.component('diff-history', __webpack_require__(91));
 
-Vue.component('passport-clients', __webpack_require__(95));
+Vue.component('passport-clients', __webpack_require__(96));
 
-Vue.component('passport-authorized-clients', __webpack_require__(100));
+Vue.component('passport-authorized-clients', __webpack_require__(101));
 
-Vue.component('passport-personal-access-tokens', __webpack_require__(105));
+Vue.component('passport-personal-access-tokens', __webpack_require__(106));
 
 var app = new Vue({
     el: '#app'
@@ -44858,6 +44859,1055 @@ exports.clearImmediate = clearImmediate;
 /* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!***************************************************
+ * mark.js v8.11.0
+ * https://github.com/julmot/mark.js
+ * Copyright (c) 2014–2017, Julian Motz
+ * Released under the MIT license https://git.io/vwTVl
+ *****************************************************/
+
+
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+(function (factory, window, document) {
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
+            return factory(window, document);
+        }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else if ((typeof module === "undefined" ? "undefined" : _typeof(module)) === "object" && module.exports) {
+        module.exports = factory(window, document);
+    } else {
+        factory(window, document);
+    }
+})(function (window, document) {
+    var Mark = function () {
+        function Mark(ctx) {
+            _classCallCheck(this, Mark);
+
+            this.ctx = ctx;
+
+            this.ie = false;
+            var ua = window.navigator.userAgent;
+            if (ua.indexOf("MSIE") > -1 || ua.indexOf("Trident") > -1) {
+                this.ie = true;
+            }
+        }
+
+        _createClass(Mark, [{
+            key: "log",
+            value: function log(msg) {
+                var level = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "debug";
+
+                var log = this.opt.log;
+                if (!this.opt.debug) {
+                    return;
+                }
+                if ((typeof log === "undefined" ? "undefined" : _typeof(log)) === "object" && typeof log[level] === "function") {
+                    log[level]("mark.js: " + msg);
+                }
+            }
+        }, {
+            key: "escapeStr",
+            value: function escapeStr(str) {
+                return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+            }
+        }, {
+            key: "createRegExp",
+            value: function createRegExp(str) {
+                if (this.opt.wildcards !== "disabled") {
+                    str = this.setupWildcardsRegExp(str);
+                }
+                str = this.escapeStr(str);
+                if (Object.keys(this.opt.synonyms).length) {
+                    str = this.createSynonymsRegExp(str);
+                }
+                if (this.opt.ignoreJoiners || this.opt.ignorePunctuation.length) {
+                    str = this.setupIgnoreJoinersRegExp(str);
+                }
+                if (this.opt.diacritics) {
+                    str = this.createDiacriticsRegExp(str);
+                }
+                str = this.createMergedBlanksRegExp(str);
+                if (this.opt.ignoreJoiners || this.opt.ignorePunctuation.length) {
+                    str = this.createJoinersRegExp(str);
+                }
+                if (this.opt.wildcards !== "disabled") {
+                    str = this.createWildcardsRegExp(str);
+                }
+                str = this.createAccuracyRegExp(str);
+                return str;
+            }
+        }, {
+            key: "createSynonymsRegExp",
+            value: function createSynonymsRegExp(str) {
+                var syn = this.opt.synonyms,
+                    sens = this.opt.caseSensitive ? "" : "i",
+                    joinerPlaceholder = this.opt.ignoreJoiners || this.opt.ignorePunctuation.length ? "\0" : "";
+                for (var index in syn) {
+                    if (syn.hasOwnProperty(index)) {
+                        var value = syn[index],
+                            k1 = this.opt.wildcards !== "disabled" ? this.setupWildcardsRegExp(index) : this.escapeStr(index),
+                            k2 = this.opt.wildcards !== "disabled" ? this.setupWildcardsRegExp(value) : this.escapeStr(value);
+                        if (k1 !== "" && k2 !== "") {
+                            str = str.replace(new RegExp("(" + k1 + "|" + k2 + ")", "gm" + sens), joinerPlaceholder + ("(" + this.processSynomyms(k1) + "|") + (this.processSynomyms(k2) + ")") + joinerPlaceholder);
+                        }
+                    }
+                }
+                return str;
+            }
+        }, {
+            key: "processSynomyms",
+            value: function processSynomyms(str) {
+                if (this.opt.ignoreJoiners || this.opt.ignorePunctuation.length) {
+                    str = this.setupIgnoreJoinersRegExp(str);
+                }
+                return str;
+            }
+        }, {
+            key: "setupWildcardsRegExp",
+            value: function setupWildcardsRegExp(str) {
+                str = str.replace(/(?:\\)*\?/g, function (val) {
+                    return val.charAt(0) === "\\" ? "?" : "\x01";
+                });
+
+                return str.replace(/(?:\\)*\*/g, function (val) {
+                    return val.charAt(0) === "\\" ? "*" : "\x02";
+                });
+            }
+        }, {
+            key: "createWildcardsRegExp",
+            value: function createWildcardsRegExp(str) {
+                var spaces = this.opt.wildcards === "withSpaces";
+                return str.replace(/\u0001/g, spaces ? "[\\S\\s]?" : "\\S?").replace(/\u0002/g, spaces ? "[\\S\\s]*?" : "\\S*");
+            }
+        }, {
+            key: "setupIgnoreJoinersRegExp",
+            value: function setupIgnoreJoinersRegExp(str) {
+                return str.replace(/[^(|)\\]/g, function (val, indx, original) {
+                    var nextChar = original.charAt(indx + 1);
+                    if (/[(|)\\]/.test(nextChar) || nextChar === "") {
+                        return val;
+                    } else {
+                        return val + "\0";
+                    }
+                });
+            }
+        }, {
+            key: "createJoinersRegExp",
+            value: function createJoinersRegExp(str) {
+                var joiner = [];
+                var ignorePunctuation = this.opt.ignorePunctuation;
+                if (Array.isArray(ignorePunctuation) && ignorePunctuation.length) {
+                    joiner.push(this.escapeStr(ignorePunctuation.join("")));
+                }
+                if (this.opt.ignoreJoiners) {
+                    joiner.push("\\u00ad\\u200b\\u200c\\u200d");
+                }
+                return joiner.length ? str.split(/\u0000+/).join("[" + joiner.join("") + "]*") : str;
+            }
+        }, {
+            key: "createDiacriticsRegExp",
+            value: function createDiacriticsRegExp(str) {
+                var sens = this.opt.caseSensitive ? "" : "i",
+                    dct = this.opt.caseSensitive ? ["aàáảãạăằắẳẵặâầấẩẫậäåāą", "AÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÄÅĀĄ", "cçćč", "CÇĆČ", "dđď", "DĐĎ", "eèéẻẽẹêềếểễệëěēę", "EÈÉẺẼẸÊỀẾỂỄỆËĚĒĘ", "iìíỉĩịîïī", "IÌÍỈĨỊÎÏĪ", "lł", "LŁ", "nñňń", "NÑŇŃ", "oòóỏõọôồốổỗộơởỡớờợöøō", "OÒÓỎÕỌÔỒỐỔỖỘƠỞỠỚỜỢÖØŌ", "rř", "RŘ", "sšśșş", "SŠŚȘŞ", "tťțţ", "TŤȚŢ", "uùúủũụưừứửữựûüůū", "UÙÚỦŨỤƯỪỨỬỮỰÛÜŮŪ", "yýỳỷỹỵÿ", "YÝỲỶỸỴŸ", "zžżź", "ZŽŻŹ"] : ["aàáảãạăằắẳẵặâầấẩẫậäåāąAÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÄÅĀĄ", "cçćčCÇĆČ", "dđďDĐĎ", "eèéẻẽẹêềếểễệëěēęEÈÉẺẼẸÊỀẾỂỄỆËĚĒĘ", "iìíỉĩịîïīIÌÍỈĨỊÎÏĪ", "lłLŁ", "nñňńNÑŇŃ", "oòóỏõọôồốổỗộơởỡớờợöøōOÒÓỎÕỌÔỒỐỔỖỘƠỞỠỚỜỢÖØŌ", "rřRŘ", "sšśșşSŠŚȘŞ", "tťțţTŤȚŢ", "uùúủũụưừứửữựûüůūUÙÚỦŨỤƯỪỨỬỮỰÛÜŮŪ", "yýỳỷỹỵÿYÝỲỶỸỴŸ", "zžżźZŽŻŹ"];
+                var handled = [];
+                str.split("").forEach(function (ch) {
+                    dct.every(function (dct) {
+                        if (dct.indexOf(ch) !== -1) {
+                            if (handled.indexOf(dct) > -1) {
+                                return false;
+                            }
+
+                            str = str.replace(new RegExp("[" + dct + "]", "gm" + sens), "[" + dct + "]");
+                            handled.push(dct);
+                        }
+                        return true;
+                    });
+                });
+                return str;
+            }
+        }, {
+            key: "createMergedBlanksRegExp",
+            value: function createMergedBlanksRegExp(str) {
+                return str.replace(/[\s]+/gmi, "[\\s]+");
+            }
+        }, {
+            key: "createAccuracyRegExp",
+            value: function createAccuracyRegExp(str) {
+                var _this = this;
+
+                var chars = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~\xA1\xBF";
+                var acc = this.opt.accuracy,
+                    val = typeof acc === "string" ? acc : acc.value,
+                    ls = typeof acc === "string" ? [] : acc.limiters,
+                    lsJoin = "";
+                ls.forEach(function (limiter) {
+                    lsJoin += "|" + _this.escapeStr(limiter);
+                });
+                switch (val) {
+                    case "partially":
+                    default:
+                        return "()(" + str + ")";
+                    case "complementary":
+                        lsJoin = "\\s" + (lsJoin ? lsJoin : this.escapeStr(chars));
+                        return "()([^" + lsJoin + "]*" + str + "[^" + lsJoin + "]*)";
+                    case "exactly":
+                        return "(^|\\s" + lsJoin + ")(" + str + ")(?=$|\\s" + lsJoin + ")";
+                }
+            }
+        }, {
+            key: "getSeparatedKeywords",
+            value: function getSeparatedKeywords(sv) {
+                var _this2 = this;
+
+                var stack = [];
+                sv.forEach(function (kw) {
+                    if (!_this2.opt.separateWordSearch) {
+                        if (kw.trim() && stack.indexOf(kw) === -1) {
+                            stack.push(kw);
+                        }
+                    } else {
+                        kw.split(" ").forEach(function (kwSplitted) {
+                            if (kwSplitted.trim() && stack.indexOf(kwSplitted) === -1) {
+                                stack.push(kwSplitted);
+                            }
+                        });
+                    }
+                });
+                return {
+                    "keywords": stack.sort(function (a, b) {
+                        return b.length - a.length;
+                    }),
+                    "length": stack.length
+                };
+            }
+        }, {
+            key: "isNumeric",
+            value: function isNumeric(value) {
+                return Number(parseFloat(value)) == value;
+            }
+        }, {
+            key: "checkRanges",
+            value: function checkRanges(array) {
+                var _this3 = this;
+
+                if (!Array.isArray(array) || Object.prototype.toString.call(array[0]) !== "[object Object]") {
+                    this.log("markRanges() will only accept an array of objects");
+                    this.opt.noMatch(array);
+                    return [];
+                }
+                var stack = [];
+                var last = 0;
+                array.sort(function (a, b) {
+                    return a.start - b.start;
+                }).forEach(function (item) {
+                    var _callNoMatchOnInvalid = _this3.callNoMatchOnInvalidRanges(item, last),
+                        start = _callNoMatchOnInvalid.start,
+                        end = _callNoMatchOnInvalid.end,
+                        valid = _callNoMatchOnInvalid.valid;
+
+                    if (valid) {
+                        item.start = start;
+                        item.length = end - start;
+                        stack.push(item);
+                        last = end;
+                    }
+                });
+                return stack;
+            }
+        }, {
+            key: "callNoMatchOnInvalidRanges",
+            value: function callNoMatchOnInvalidRanges(range, last) {
+                var start = void 0,
+                    end = void 0,
+                    valid = false;
+                if (range && typeof range.start !== "undefined") {
+                    start = parseInt(range.start, 10);
+                    end = start + parseInt(range.length, 10);
+
+                    if (this.isNumeric(range.start) && this.isNumeric(range.length) && end - last > 0 && end - start > 0) {
+                        valid = true;
+                    } else {
+                        this.log("Ignoring invalid or overlapping range: " + ("" + JSON.stringify(range)));
+                        this.opt.noMatch(range);
+                    }
+                } else {
+                    this.log("Ignoring invalid range: " + JSON.stringify(range));
+                    this.opt.noMatch(range);
+                }
+                return {
+                    start: start,
+                    end: end,
+                    valid: valid
+                };
+            }
+        }, {
+            key: "checkWhitespaceRanges",
+            value: function checkWhitespaceRanges(range, originalLength, string) {
+                var end = void 0,
+                    valid = true,
+                    max = string.length,
+                    offset = originalLength - max,
+                    start = parseInt(range.start, 10) - offset;
+
+                start = start > max ? max : start;
+                end = start + parseInt(range.length, 10);
+                if (end > max) {
+                    end = max;
+                    this.log("End range automatically set to the max value of " + max);
+                }
+                if (start < 0 || end - start < 0 || start > max || end > max) {
+                    valid = false;
+                    this.log("Invalid range: " + JSON.stringify(range));
+                    this.opt.noMatch(range);
+                } else if (string.substring(start, end).replace(/\s+/g, "") === "") {
+                    valid = false;
+
+                    this.log("Skipping whitespace only range: " + JSON.stringify(range));
+                    this.opt.noMatch(range);
+                }
+                return {
+                    start: start,
+                    end: end,
+                    valid: valid
+                };
+            }
+        }, {
+            key: "getTextNodes",
+            value: function getTextNodes(cb) {
+                var _this4 = this;
+
+                var val = "",
+                    nodes = [];
+                this.iterator.forEachNode(NodeFilter.SHOW_TEXT, function (node) {
+                    nodes.push({
+                        start: val.length,
+                        end: (val += node.textContent).length,
+                        node: node
+                    });
+                }, function (node) {
+                    if (_this4.matchesExclude(node.parentNode)) {
+                        return NodeFilter.FILTER_REJECT;
+                    } else {
+                        return NodeFilter.FILTER_ACCEPT;
+                    }
+                }, function () {
+                    cb({
+                        value: val,
+                        nodes: nodes
+                    });
+                });
+            }
+        }, {
+            key: "matchesExclude",
+            value: function matchesExclude(el) {
+                return DOMIterator.matches(el, this.opt.exclude.concat(["script", "style", "title", "head", "html"]));
+            }
+        }, {
+            key: "wrapRangeInTextNode",
+            value: function wrapRangeInTextNode(node, start, end) {
+                var hEl = !this.opt.element ? "mark" : this.opt.element,
+                    startNode = node.splitText(start),
+                    ret = startNode.splitText(end - start);
+                var repl = document.createElement(hEl);
+                repl.setAttribute("data-markjs", "true");
+                if (this.opt.className) {
+                    repl.setAttribute("class", this.opt.className);
+                }
+                repl.textContent = startNode.textContent;
+                startNode.parentNode.replaceChild(repl, startNode);
+                return ret;
+            }
+        }, {
+            key: "wrapRangeInMappedTextNode",
+            value: function wrapRangeInMappedTextNode(dict, start, end, filterCb, eachCb) {
+                var _this5 = this;
+
+                dict.nodes.every(function (n, i) {
+                    var sibl = dict.nodes[i + 1];
+                    if (typeof sibl === "undefined" || sibl.start > start) {
+                        if (!filterCb(n.node)) {
+                            return false;
+                        }
+
+                        var s = start - n.start,
+                            e = (end > n.end ? n.end : end) - n.start,
+                            startStr = dict.value.substr(0, n.start),
+                            endStr = dict.value.substr(e + n.start);
+                        n.node = _this5.wrapRangeInTextNode(n.node, s, e);
+
+                        dict.value = startStr + endStr;
+                        dict.nodes.forEach(function (k, j) {
+                            if (j >= i) {
+                                if (dict.nodes[j].start > 0 && j !== i) {
+                                    dict.nodes[j].start -= e;
+                                }
+                                dict.nodes[j].end -= e;
+                            }
+                        });
+                        end -= e;
+                        eachCb(n.node.previousSibling, n.start);
+                        if (end > n.end) {
+                            start = n.end;
+                        } else {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+            }
+        }, {
+            key: "wrapMatches",
+            value: function wrapMatches(regex, ignoreGroups, filterCb, eachCb, endCb) {
+                var _this6 = this;
+
+                var matchIdx = ignoreGroups === 0 ? 0 : ignoreGroups + 1;
+                this.getTextNodes(function (dict) {
+                    dict.nodes.forEach(function (node) {
+                        node = node.node;
+                        var match = void 0;
+                        while ((match = regex.exec(node.textContent)) !== null && match[matchIdx] !== "") {
+                            if (!filterCb(match[matchIdx], node)) {
+                                continue;
+                            }
+                            var pos = match.index;
+                            if (matchIdx !== 0) {
+                                for (var i = 1; i < matchIdx; i++) {
+                                    pos += match[i].length;
+                                }
+                            }
+                            node = _this6.wrapRangeInTextNode(node, pos, pos + match[matchIdx].length);
+                            eachCb(node.previousSibling);
+
+                            regex.lastIndex = 0;
+                        }
+                    });
+                    endCb();
+                });
+            }
+        }, {
+            key: "wrapMatchesAcrossElements",
+            value: function wrapMatchesAcrossElements(regex, ignoreGroups, filterCb, eachCb, endCb) {
+                var _this7 = this;
+
+                var matchIdx = ignoreGroups === 0 ? 0 : ignoreGroups + 1;
+                this.getTextNodes(function (dict) {
+                    var match = void 0;
+                    while ((match = regex.exec(dict.value)) !== null && match[matchIdx] !== "") {
+                        var start = match.index;
+                        if (matchIdx !== 0) {
+                            for (var i = 1; i < matchIdx; i++) {
+                                start += match[i].length;
+                            }
+                        }
+                        var end = start + match[matchIdx].length;
+
+                        _this7.wrapRangeInMappedTextNode(dict, start, end, function (node) {
+                            return filterCb(match[matchIdx], node);
+                        }, function (node, lastIndex) {
+                            regex.lastIndex = lastIndex;
+                            eachCb(node);
+                        });
+                    }
+                    endCb();
+                });
+            }
+        }, {
+            key: "wrapRangeFromIndex",
+            value: function wrapRangeFromIndex(ranges, filterCb, eachCb, endCb) {
+                var _this8 = this;
+
+                this.getTextNodes(function (dict) {
+                    var originalLength = dict.value.length;
+                    ranges.forEach(function (range, counter) {
+                        var _checkWhitespaceRange = _this8.checkWhitespaceRanges(range, originalLength, dict.value),
+                            start = _checkWhitespaceRange.start,
+                            end = _checkWhitespaceRange.end,
+                            valid = _checkWhitespaceRange.valid;
+
+                        if (valid) {
+                            _this8.wrapRangeInMappedTextNode(dict, start, end, function (node) {
+                                return filterCb(node, range, dict.value.substring(start, end), counter);
+                            }, function (node) {
+                                eachCb(node, range);
+                            });
+                        }
+                    });
+                    endCb();
+                });
+            }
+        }, {
+            key: "unwrapMatches",
+            value: function unwrapMatches(node) {
+                var parent = node.parentNode;
+                var docFrag = document.createDocumentFragment();
+                while (node.firstChild) {
+                    docFrag.appendChild(node.removeChild(node.firstChild));
+                }
+                parent.replaceChild(docFrag, node);
+                if (!this.ie) {
+                    parent.normalize();
+                } else {
+                    this.normalizeTextNode(parent);
+                }
+            }
+        }, {
+            key: "normalizeTextNode",
+            value: function normalizeTextNode(node) {
+                if (!node) {
+                    return;
+                }
+                if (node.nodeType === 3) {
+                    while (node.nextSibling && node.nextSibling.nodeType === 3) {
+                        node.nodeValue += node.nextSibling.nodeValue;
+                        node.parentNode.removeChild(node.nextSibling);
+                    }
+                } else {
+                    this.normalizeTextNode(node.firstChild);
+                }
+                this.normalizeTextNode(node.nextSibling);
+            }
+        }, {
+            key: "markRegExp",
+            value: function markRegExp(regexp, opt) {
+                var _this9 = this;
+
+                this.opt = opt;
+                this.log("Searching with expression \"" + regexp + "\"");
+                var totalMatches = 0,
+                    fn = "wrapMatches";
+                var eachCb = function eachCb(element) {
+                    totalMatches++;
+                    _this9.opt.each(element);
+                };
+                if (this.opt.acrossElements) {
+                    fn = "wrapMatchesAcrossElements";
+                }
+                this[fn](regexp, this.opt.ignoreGroups, function (match, node) {
+                    return _this9.opt.filter(node, match, totalMatches);
+                }, eachCb, function () {
+                    if (totalMatches === 0) {
+                        _this9.opt.noMatch(regexp);
+                    }
+                    _this9.opt.done(totalMatches);
+                });
+            }
+        }, {
+            key: "mark",
+            value: function mark(sv, opt) {
+                var _this10 = this;
+
+                this.opt = opt;
+                var totalMatches = 0,
+                    fn = "wrapMatches";
+
+                var _getSeparatedKeywords = this.getSeparatedKeywords(typeof sv === "string" ? [sv] : sv),
+                    kwArr = _getSeparatedKeywords.keywords,
+                    kwArrLen = _getSeparatedKeywords.length,
+                    sens = this.opt.caseSensitive ? "" : "i",
+                    handler = function handler(kw) {
+                    var regex = new RegExp(_this10.createRegExp(kw), "gm" + sens),
+                        matches = 0;
+                    _this10.log("Searching with expression \"" + regex + "\"");
+                    _this10[fn](regex, 1, function (term, node) {
+                        return _this10.opt.filter(node, kw, totalMatches, matches);
+                    }, function (element) {
+                        matches++;
+                        totalMatches++;
+                        _this10.opt.each(element);
+                    }, function () {
+                        if (matches === 0) {
+                            _this10.opt.noMatch(kw);
+                        }
+                        if (kwArr[kwArrLen - 1] === kw) {
+                            _this10.opt.done(totalMatches);
+                        } else {
+                            handler(kwArr[kwArr.indexOf(kw) + 1]);
+                        }
+                    });
+                };
+
+                if (this.opt.acrossElements) {
+                    fn = "wrapMatchesAcrossElements";
+                }
+                if (kwArrLen === 0) {
+                    this.opt.done(totalMatches);
+                } else {
+                    handler(kwArr[0]);
+                }
+            }
+        }, {
+            key: "markRanges",
+            value: function markRanges(rawRanges, opt) {
+                var _this11 = this;
+
+                this.opt = opt;
+                var totalMatches = 0,
+                    ranges = this.checkRanges(rawRanges);
+                if (ranges && ranges.length) {
+                    this.log("Starting to mark with the following ranges: " + JSON.stringify(ranges));
+                    this.wrapRangeFromIndex(ranges, function (node, range, match, counter) {
+                        return _this11.opt.filter(node, range, match, counter);
+                    }, function (element, range) {
+                        totalMatches++;
+                        _this11.opt.each(element, range);
+                    }, function () {
+                        _this11.opt.done(totalMatches);
+                    });
+                } else {
+                    this.opt.done(totalMatches);
+                }
+            }
+        }, {
+            key: "unmark",
+            value: function unmark(opt) {
+                var _this12 = this;
+
+                this.opt = opt;
+                var sel = this.opt.element ? this.opt.element : "*";
+                sel += "[data-markjs]";
+                if (this.opt.className) {
+                    sel += "." + this.opt.className;
+                }
+                this.log("Removal selector \"" + sel + "\"");
+                this.iterator.forEachNode(NodeFilter.SHOW_ELEMENT, function (node) {
+                    _this12.unwrapMatches(node);
+                }, function (node) {
+                    var matchesSel = DOMIterator.matches(node, sel),
+                        matchesExclude = _this12.matchesExclude(node);
+                    if (!matchesSel || matchesExclude) {
+                        return NodeFilter.FILTER_REJECT;
+                    } else {
+                        return NodeFilter.FILTER_ACCEPT;
+                    }
+                }, this.opt.done);
+            }
+        }, {
+            key: "opt",
+            set: function set(val) {
+                this._opt = _extends({}, {
+                    "element": "",
+                    "className": "",
+                    "exclude": [],
+                    "iframes": false,
+                    "iframesTimeout": 5000,
+                    "separateWordSearch": true,
+                    "diacritics": true,
+                    "synonyms": {},
+                    "accuracy": "partially",
+                    "acrossElements": false,
+                    "caseSensitive": false,
+                    "ignoreJoiners": false,
+                    "ignoreGroups": 0,
+                    "ignorePunctuation": [],
+                    "wildcards": "disabled",
+                    "each": function each() {},
+                    "noMatch": function noMatch() {},
+                    "filter": function filter() {
+                        return true;
+                    },
+                    "done": function done() {},
+                    "debug": false,
+                    "log": window.console
+                }, val);
+            },
+            get: function get() {
+                return this._opt;
+            }
+        }, {
+            key: "iterator",
+            get: function get() {
+                return new DOMIterator(this.ctx, this.opt.iframes, this.opt.exclude, this.opt.iframesTimeout);
+            }
+        }]);
+
+        return Mark;
+    }();
+
+    var DOMIterator = function () {
+        function DOMIterator(ctx) {
+            var iframes = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+            var exclude = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+            var iframesTimeout = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 5000;
+
+            _classCallCheck(this, DOMIterator);
+
+            this.ctx = ctx;
+
+            this.iframes = iframes;
+
+            this.exclude = exclude;
+
+            this.iframesTimeout = iframesTimeout;
+        }
+
+        _createClass(DOMIterator, [{
+            key: "getContexts",
+            value: function getContexts() {
+                var ctx = void 0,
+                    filteredCtx = [];
+                if (typeof this.ctx === "undefined" || !this.ctx) {
+                    ctx = [];
+                } else if (NodeList.prototype.isPrototypeOf(this.ctx)) {
+                    ctx = Array.prototype.slice.call(this.ctx);
+                } else if (Array.isArray(this.ctx)) {
+                    ctx = this.ctx;
+                } else if (typeof this.ctx === "string") {
+                    ctx = Array.prototype.slice.call(document.querySelectorAll(this.ctx));
+                } else {
+                    ctx = [this.ctx];
+                }
+
+                ctx.forEach(function (ctx) {
+                    var isDescendant = filteredCtx.filter(function (contexts) {
+                        return contexts.contains(ctx);
+                    }).length > 0;
+                    if (filteredCtx.indexOf(ctx) === -1 && !isDescendant) {
+                        filteredCtx.push(ctx);
+                    }
+                });
+                return filteredCtx;
+            }
+        }, {
+            key: "getIframeContents",
+            value: function getIframeContents(ifr, successFn) {
+                var errorFn = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function () {};
+
+                var doc = void 0;
+                try {
+                    var ifrWin = ifr.contentWindow;
+                    doc = ifrWin.document;
+                    if (!ifrWin || !doc) {
+                        throw new Error("iframe inaccessible");
+                    }
+                } catch (e) {
+                    errorFn();
+                }
+                if (doc) {
+                    successFn(doc);
+                }
+            }
+        }, {
+            key: "isIframeBlank",
+            value: function isIframeBlank(ifr) {
+                var bl = "about:blank",
+                    src = ifr.getAttribute("src").trim(),
+                    href = ifr.contentWindow.location.href;
+                return href === bl && src !== bl && src;
+            }
+        }, {
+            key: "observeIframeLoad",
+            value: function observeIframeLoad(ifr, successFn, errorFn) {
+                var _this13 = this;
+
+                var called = false,
+                    tout = null;
+                var listener = function listener() {
+                    if (called) {
+                        return;
+                    }
+                    called = true;
+                    clearTimeout(tout);
+                    try {
+                        if (!_this13.isIframeBlank(ifr)) {
+                            ifr.removeEventListener("load", listener);
+                            _this13.getIframeContents(ifr, successFn, errorFn);
+                        }
+                    } catch (e) {
+                        errorFn();
+                    }
+                };
+                ifr.addEventListener("load", listener);
+                tout = setTimeout(listener, this.iframesTimeout);
+            }
+        }, {
+            key: "onIframeReady",
+            value: function onIframeReady(ifr, successFn, errorFn) {
+                try {
+                    if (ifr.contentWindow.document.readyState === "complete") {
+                        if (this.isIframeBlank(ifr)) {
+                            this.observeIframeLoad(ifr, successFn, errorFn);
+                        } else {
+                            this.getIframeContents(ifr, successFn, errorFn);
+                        }
+                    } else {
+                        this.observeIframeLoad(ifr, successFn, errorFn);
+                    }
+                } catch (e) {
+                    errorFn();
+                }
+            }
+        }, {
+            key: "waitForIframes",
+            value: function waitForIframes(ctx, done) {
+                var _this14 = this;
+
+                var eachCalled = 0;
+                this.forEachIframe(ctx, function () {
+                    return true;
+                }, function (ifr) {
+                    eachCalled++;
+                    _this14.waitForIframes(ifr.querySelector("html"), function () {
+                        if (! --eachCalled) {
+                            done();
+                        }
+                    });
+                }, function (handled) {
+                    if (!handled) {
+                        done();
+                    }
+                });
+            }
+        }, {
+            key: "forEachIframe",
+            value: function forEachIframe(ctx, filter, each) {
+                var _this15 = this;
+
+                var end = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : function () {};
+
+                var ifr = ctx.querySelectorAll("iframe"),
+                    open = ifr.length,
+                    handled = 0;
+                ifr = Array.prototype.slice.call(ifr);
+                var checkEnd = function checkEnd() {
+                    if (--open <= 0) {
+                        end(handled);
+                    }
+                };
+                if (!open) {
+                    checkEnd();
+                }
+                ifr.forEach(function (ifr) {
+                    if (DOMIterator.matches(ifr, _this15.exclude)) {
+                        checkEnd();
+                    } else {
+                        _this15.onIframeReady(ifr, function (con) {
+                            if (filter(ifr)) {
+                                handled++;
+                                each(con);
+                            }
+                            checkEnd();
+                        }, checkEnd);
+                    }
+                });
+            }
+        }, {
+            key: "createIterator",
+            value: function createIterator(ctx, whatToShow, filter) {
+                return document.createNodeIterator(ctx, whatToShow, filter, false);
+            }
+        }, {
+            key: "createInstanceOnIframe",
+            value: function createInstanceOnIframe(contents) {
+                return new DOMIterator(contents.querySelector("html"), this.iframes);
+            }
+        }, {
+            key: "compareNodeIframe",
+            value: function compareNodeIframe(node, prevNode, ifr) {
+                var compCurr = node.compareDocumentPosition(ifr),
+                    prev = Node.DOCUMENT_POSITION_PRECEDING;
+                if (compCurr & prev) {
+                    if (prevNode !== null) {
+                        var compPrev = prevNode.compareDocumentPosition(ifr),
+                            after = Node.DOCUMENT_POSITION_FOLLOWING;
+                        if (compPrev & after) {
+                            return true;
+                        }
+                    } else {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }, {
+            key: "getIteratorNode",
+            value: function getIteratorNode(itr) {
+                var prevNode = itr.previousNode();
+                var node = void 0;
+                if (prevNode === null) {
+                    node = itr.nextNode();
+                } else {
+                    node = itr.nextNode() && itr.nextNode();
+                }
+                return {
+                    prevNode: prevNode,
+                    node: node
+                };
+            }
+        }, {
+            key: "checkIframeFilter",
+            value: function checkIframeFilter(node, prevNode, currIfr, ifr) {
+                var key = false,
+                    handled = false;
+                ifr.forEach(function (ifrDict, i) {
+                    if (ifrDict.val === currIfr) {
+                        key = i;
+                        handled = ifrDict.handled;
+                    }
+                });
+                if (this.compareNodeIframe(node, prevNode, currIfr)) {
+                    if (key === false && !handled) {
+                        ifr.push({
+                            val: currIfr,
+                            handled: true
+                        });
+                    } else if (key !== false && !handled) {
+                        ifr[key].handled = true;
+                    }
+                    return true;
+                }
+                if (key === false) {
+                    ifr.push({
+                        val: currIfr,
+                        handled: false
+                    });
+                }
+                return false;
+            }
+        }, {
+            key: "handleOpenIframes",
+            value: function handleOpenIframes(ifr, whatToShow, eCb, fCb) {
+                var _this16 = this;
+
+                ifr.forEach(function (ifrDict) {
+                    if (!ifrDict.handled) {
+                        _this16.getIframeContents(ifrDict.val, function (con) {
+                            _this16.createInstanceOnIframe(con).forEachNode(whatToShow, eCb, fCb);
+                        });
+                    }
+                });
+            }
+        }, {
+            key: "iterateThroughNodes",
+            value: function iterateThroughNodes(whatToShow, ctx, eachCb, filterCb, doneCb) {
+                var _this17 = this;
+
+                var itr = this.createIterator(ctx, whatToShow, filterCb);
+                var ifr = [],
+                    elements = [],
+                    node = void 0,
+                    prevNode = void 0,
+                    retrieveNodes = function retrieveNodes() {
+                    var _getIteratorNode = _this17.getIteratorNode(itr);
+
+                    prevNode = _getIteratorNode.prevNode;
+                    node = _getIteratorNode.node;
+
+                    return node;
+                };
+                while (retrieveNodes()) {
+                    if (this.iframes) {
+                        this.forEachIframe(ctx, function (currIfr) {
+                            return _this17.checkIframeFilter(node, prevNode, currIfr, ifr);
+                        }, function (con) {
+                            _this17.createInstanceOnIframe(con).forEachNode(whatToShow, function (ifrNode) {
+                                return elements.push(ifrNode);
+                            }, filterCb);
+                        });
+                    }
+
+                    elements.push(node);
+                }
+                elements.forEach(function (node) {
+                    eachCb(node);
+                });
+                if (this.iframes) {
+                    this.handleOpenIframes(ifr, whatToShow, eachCb, filterCb);
+                }
+                doneCb();
+            }
+        }, {
+            key: "forEachNode",
+            value: function forEachNode(whatToShow, each, filter) {
+                var _this18 = this;
+
+                var done = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : function () {};
+
+                var contexts = this.getContexts();
+                var open = contexts.length;
+                if (!open) {
+                    done();
+                }
+                contexts.forEach(function (ctx) {
+                    var ready = function ready() {
+                        _this18.iterateThroughNodes(whatToShow, ctx, each, filter, function () {
+                            if (--open <= 0) {
+                                done();
+                            }
+                        });
+                    };
+
+                    if (_this18.iframes) {
+                        _this18.waitForIframes(ctx, ready);
+                    } else {
+                        ready();
+                    }
+                });
+            }
+        }], [{
+            key: "matches",
+            value: function matches(element, selector) {
+                var selectors = typeof selector === "string" ? [selector] : selector,
+                    fn = element.matches || element.matchesSelector || element.msMatchesSelector || element.mozMatchesSelector || element.oMatchesSelector || element.webkitMatchesSelector;
+                if (fn) {
+                    var match = false;
+                    selectors.every(function (sel) {
+                        if (fn.call(element, sel)) {
+                            match = true;
+                            return false;
+                        }
+                        return true;
+                    });
+                    return match;
+                } else {
+                    return false;
+                }
+            }
+        }]);
+
+        return DOMIterator;
+    }();
+
+    window.Mark = function (ctx) {
+        var _this19 = this;
+
+        var instance = new Mark(ctx);
+        this.mark = function (sv, opt) {
+            instance.mark(sv, opt);
+            return _this19;
+        };
+        this.markRegExp = function (sv, opt) {
+            instance.markRegExp(sv, opt);
+            return _this19;
+        };
+        this.markRanges = function (sv, opt) {
+            instance.markRanges(sv, opt);
+            return _this19;
+        };
+        this.unmark = function (opt) {
+            instance.unmark(opt);
+            return _this19;
+        };
+        return this;
+    };
+
+    return window.Mark;
+}, window, document);
+
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
 /*!
 * Vue Material v0.7.5
 * Made with love by Marcos Moura
@@ -44873,19 +45923,19 @@ return n("li",{staticClass:"md-list-item",class:t.classes},[n("div",{staticClass
 },staticRenderFns:[]}}),(function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"md-menu"},[t._t("default"),t._v(" "),n("md-backdrop",{ref:"backdrop",staticClass:"md-menu-backdrop md-transparent md-active",on:{close:t.close}})],2)},staticRenderFns:[]}}),(function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("md-dialog",{ref:"dialog",staticClass:"md-dialog-confirm",on:{close:function(e){t.fireCloseEvent("cancel")}}},[t.mdTitle?n("md-dialog-title",[t._v(t._s(t.mdTitle))]):t._e(),t._v(" "),t.mdContentHtml?n("md-dialog-content",{domProps:{innerHTML:t._s(t.mdContentHtml)}}):n("md-dialog-content",[t._v(t._s(t.mdContent))]),t._v(" "),n("md-dialog-actions",[n("md-button",{staticClass:"md-primary",on:{click:function(e){t.close("cancel")}}},[t._v(t._s(t.mdCancelText))]),t._v(" "),n("md-button",{staticClass:"md-primary",on:{click:function(e){t.close("ok")}}},[t._v(t._s(t.mdOkText))])],1)],1)},staticRenderFns:[]}}),(function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"md-backdrop",on:{click:t.close,keyup:function(e){return"button"in e||!t._k(e.keyCode,"esc",27)?void t.close(e):null}}})},staticRenderFns:[]}}),(function(t,e){t.exports={render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"md-list-expand-container"},[t._t("default")],2)},staticRenderFns:[]}}),(function(e,n){e.exports=t}),(function(t,e,n){"use strict";function i(t){return t&&t.__esModule?t:{default:t}}Object.defineProperty(e,"__esModule",{value:!0});var o=n(114),r=i(o),a=n(80),s=i(a),d=n(81),l=i(d),c=n(82),u=i(c),m=n(83),f=i(m),h=n(84),p=i(h),b=n(85),v=i(b),g=n(86),E=i(g),_=n(87),C=i(_),M=n(88),T=i(M),A=n(89),x=i(A),N=n(90),y=i(N),O=n(91),S=i(O),R=n(92),w=i(R),k=n(93),H=i(k),P=n(94),L=i(P),$=n(95),I=i($),B=n(96),D=i(B),F=n(97),j=i(F),W=n(98),Y=i(W),V=n(99),U=i(V),G=n(100),z=i(G),q=n(101),K=i(q),X=n(102),J=i(X),Q=n(103),Z=i(Q),tt=n(104),et=i(tt),nt=n(105),it=i(nt),ot=n(106),rt=i(ot),at=n(107),st=i(at),dt=n(108),lt=i(dt),ct=n(109),ut=i(ct),mt=n(110),ft=i(mt),ht=n(111),pt=i(ht),bt=n(112),vt=i(bt),gt=n(113),Et=i(gt),_t={MdCore:r.default,MdAvatar:s.default,MdBackdrop:l.default,MdBottomBar:u.default,MdButton:f.default,MdButtonToggle:p.default,MdCard:v.default,MdCheckbox:E.default,MdChips:C.default,MdDialog:T.default,MdDivider:x.default,MdFile:y.default,MdIcon:S.default,MdImage:w.default,MdInputContainer:H.default,MdLayout:L.default,MdList:I.default,MdMenu:D.default,MdOnboarding:j.default,MdProgress:Y.default,MdRadio:U.default,MdRatingBar:z.default,MdSelect:K.default,MdSidenav:J.default,MdSnackbar:Z.default,MdSpeedDial:et.default,MdSpinner:it.default,MdStepper:rt.default,MdSubheader:st.default,MdSwitch:lt.default,MdTable:ut.default,MdTabs:ft.default,MdToolbar:pt.default,MdTooltip:vt.default,MdWhiteframe:Et.default};_t.install=function(t){for(var e in _t){var n=_t[e];n&&"install"!==e&&t.use(n)}},e.default=_t,t.exports=e.default}),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(function(t,e,n){t.exports=n(445)})])}));
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(45)
+  __webpack_require__(46)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(48)
+var __vue_script__ = __webpack_require__(49)
 /* template */
-var __vue_template__ = __webpack_require__(49)
+var __vue_template__ = __webpack_require__(50)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -44925,13 +45975,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(46);
+var content = __webpack_require__(47);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -44951,7 +46001,7 @@ if(false) {
 }
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -44959,13 +46009,13 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports) {
 
 /**
@@ -44998,16 +46048,11 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
 //
 //
 //
@@ -45049,7 +46094,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -45061,7 +46106,7 @@ var render = function() {
     [
       _c(
         "md-toolbar",
-        { attrs: { "md-theme": "nav" } },
+        { staticClass: "md-flex-100", attrs: { "md-theme": "nav" } },
         [
           _c(
             "md-button",
@@ -45138,19 +46183,19 @@ if (false) {
 }
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(51)
+  __webpack_require__(52)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(53)
+var __vue_script__ = __webpack_require__(54)
 /* template */
-var __vue_template__ = __webpack_require__(54)
+var __vue_template__ = __webpack_require__(55)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -45190,13 +46235,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(52);
+var content = __webpack_require__(53);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -45216,7 +46261,7 @@ if(false) {
 }
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -45230,7 +46275,7 @@ exports.push([module.i, "\n.alert-flash {\n        position: fixed;\n        wid
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -45284,7 +46329,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -45327,19 +46372,19 @@ if (false) {
 }
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(56)
+  __webpack_require__(57)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(58)
+var __vue_script__ = __webpack_require__(59)
 /* template */
-var __vue_template__ = __webpack_require__(59)
+var __vue_template__ = __webpack_require__(60)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -45379,13 +46424,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(57);
+var content = __webpack_require__(58);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -45405,7 +46450,7 @@ if(false) {
 }
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -45419,7 +46464,7 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -45509,7 +46554,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -45568,19 +46613,19 @@ if (false) {
 }
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(61)
+  __webpack_require__(62)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(63)
+var __vue_script__ = __webpack_require__(64)
 /* template */
-var __vue_template__ = __webpack_require__(64)
+var __vue_template__ = __webpack_require__(65)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -45620,13 +46665,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(62);
+var content = __webpack_require__(63);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -45646,7 +46691,7 @@ if(false) {
 }
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -45660,7 +46705,7 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -45708,7 +46753,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -45736,19 +46781,19 @@ if (false) {
 }
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(66)
+  __webpack_require__(67)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(68)
+var __vue_script__ = __webpack_require__(69)
 /* template */
-var __vue_template__ = __webpack_require__(69)
+var __vue_template__ = __webpack_require__(70)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -45788,13 +46833,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(67);
+var content = __webpack_require__(68);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -45814,7 +46859,7 @@ if(false) {
 }
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -45828,7 +46873,7 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -45978,7 +47023,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -46222,19 +47267,19 @@ if (false) {
 }
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(71)
+  __webpack_require__(72)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(73)
+var __vue_script__ = __webpack_require__(74)
 /* template */
-var __vue_template__ = __webpack_require__(74)
+var __vue_template__ = __webpack_require__(75)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -46274,13 +47319,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(72);
+var content = __webpack_require__(73);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -46300,7 +47345,7 @@ if(false) {
 }
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -46314,7 +47359,7 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -46351,7 +47396,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -46422,19 +47467,19 @@ if (false) {
 }
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(76)
+  __webpack_require__(77)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(78)
+var __vue_script__ = __webpack_require__(79)
 /* template */
-var __vue_template__ = __webpack_require__(79)
+var __vue_template__ = __webpack_require__(80)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -46474,13 +47519,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(77);
+var content = __webpack_require__(78);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -46500,7 +47545,7 @@ if(false) {
 }
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -46508,17 +47553,53 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n.commented {\n    background: yellow;\n}\n\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -46593,15 +47674,32 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             show: 'description',
             showHistory: {},
             showIndex: 0,
-            historyDisplay: true
+            historyDisplay: true,
+            allComments: this.el.comments,
+            comments: [],
+            description: this.el.description
         };
     },
     created: function created() {
+        var _this = this;
+
         if (this.el.history.length > 0) {
             this.showHistory = this.el.history[0];
         }
+
+        this.allComments.forEach(function (comment) {
+            if (_this.el.version === comment.version) {
+                _this.comments.push(comment);
+            }
+        });
     },
 
+
+    watch: {
+        'show': function show(newVal, oldVal) {
+            this.recalculateComments();
+        }
+    },
 
     computed: {
         commentObj: function commentObj() {
@@ -46616,15 +47714,74 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
     },
     methods: {
+        recalculateComments: function recalculateComments() {
+            var _this2 = this;
+
+            if (this.show === 'description') {
+                this.comments = new Array();
+                this.allComments.forEach(function (comment) {
+                    if (_this2.el.version === comment.version) {
+                        _this2.comments.push(comment);
+                    }
+                });
+            } else if (this.show === 'history') {
+                this.comments = new Array();
+                this.allComments.forEach(function (comment) {
+                    if (_this2.showHistory.version === comment.version) {
+                        _this2.comments.push(comment);
+                    }
+                });
+            }
+        },
         onElementUpdate: function onElementUpdate(data) {
             this.el = data;
         },
         onCommentCreated: function onCommentCreated(data) {
-            this.el.comments.push(data);
+            this.allComments.push(data);
+            this.recalculateComments();
+
+            this.closeDialog('commentDialog');
+        },
+        getCommentedMark: function getCommentedMark(comment) {
+            var desc = new Mark('#desc_' + this.el.id);
+            var search = '';
+
+            if (comment.position.description === undefined) {
+                return;
+            }
+
+            var position = comment.position.description;
+
+            if (position !== undefined && position.text !== undefined) {
+                search = position.text;
+            }
+
+            desc.mark(search, {
+                //accuracy: "exactly",
+                separateWordSearch: false
+            });
+        },
+        getHighlighted: function getHighlighted() {
+            var selection = document.getSelection();
+
+            var selectedText = selection.toString();
+            var selectedRange = selection.getRangeAt(0);
+
+            this.$set(this.commentObj, 'position', {
+                description: {
+                    start: selectedRange.startOffset,
+                    end: selectedRange.endOffset,
+                    text: selectedText
+                }
+            });
+
+            this.openDialog('commentDialog');
         },
         setHistoryDisplay: function setHistoryDisplay(index, history) {
             this.showIndex = index;
             this.showHistory = history;
+
+            this.recalculateComments();
         },
         getOriginal: function getOriginal() {
             var index = this.showIndex;
@@ -46646,12 +47803,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 titleDiff: jsdiff.diffChars(this.el.title, history.title),
                 descDiff: jsdiff.diffChars(this.el.description, history.description)
             };
+        },
+        openDialog: function openDialog(ref) {
+            if (this.$refs[ref] !== undefined) {
+                this.$refs[ref].open();
+            }
+        },
+        closeDialog: function closeDialog(ref) {
+            if (this.$refs[ref] !== undefined) {
+                this.$refs[ref].close();
+            }
         }
     }
 });
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -46671,7 +47838,6 @@ var render = function() {
         [
           _c(
             "md-card",
-            { staticClass: "md-accent" },
             [
               _c("md-card-header", [
                 _c("div", { staticClass: "md-title" }, [
@@ -46695,95 +47861,241 @@ var render = function() {
               ]),
               _vm._v(" "),
               _c(
-                "md-card-actions",
+                "md-card-content",
                 [
                   _c(
-                    "md-button",
-                    {
-                      attrs: { disabled: _vm.show === "description" },
-                      on: {
-                        click: function($event) {
-                          _vm.show = "description"
-                        }
-                      }
-                    },
-                    [_c("md-icon", [_vm._v("description")])],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "md-button",
-                    {
-                      attrs: { disabled: _vm.show === "comments" },
-                      on: {
-                        click: function($event) {
-                          _vm.show = "comments"
-                        }
-                      }
-                    },
-                    [_c("md-icon", [_vm._v("comment")])],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "md-button",
-                    {
-                      attrs: { disabled: _vm.show === "history" },
-                      on: {
-                        click: function($event) {
-                          _vm.show = "history"
-                        }
-                      }
-                    },
-                    [_c("md-icon", [_vm._v("history")])],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "md-button",
-                    {
-                      attrs: { disabled: _vm.show === "edit" },
-                      on: {
-                        click: function($event) {
-                          _vm.show = "edit"
-                        }
-                      }
-                    },
-                    [_c("md-icon", [_vm._v("mode_edit")])],
-                    1
-                  )
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _vm.show === "description"
-                ? _c("md-card-content", [
-                    _vm._v(
-                      "\n            " +
-                        _vm._s(_vm.el.description) +
-                        "\n          "
-                    )
-                  ])
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.show === "comments"
-                ? _c(
-                    "md-card-content",
+                    "md-layout",
+                    { attrs: { "md-gutter": "8" } },
                     [
-                      _c("comment-form", {
-                        attrs: {
-                          el: _vm.commentObj,
-                          method: "POST",
-                          action: "/api/comments/"
-                        },
-                        on: { create: _vm.onCommentCreated }
-                      }),
+                      _c(
+                        "md-layout",
+                        { attrs: { "md-flex": "10" } },
+                        [
+                          _c(
+                            "md-list",
+                            { staticClass: "md-dense" },
+                            [
+                              _c(
+                                "md-list-item",
+                                [
+                                  _c(
+                                    "md-button",
+                                    {
+                                      staticClass:
+                                        "md-icon-button md-list-action",
+                                      attrs: {
+                                        disabled: _vm.show === "description"
+                                      },
+                                      on: {
+                                        click: function($event) {
+                                          _vm.show = "description"
+                                        }
+                                      }
+                                    },
+                                    [_c("md-icon", [_vm._v("description")])],
+                                    1
+                                  )
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "md-list-item",
+                                [
+                                  _c(
+                                    "md-button",
+                                    {
+                                      staticClass:
+                                        "md-icon-button md-list-action",
+                                      attrs: {
+                                        disabled: _vm.show === "comments"
+                                      },
+                                      on: {
+                                        click: function($event) {
+                                          _vm.openDialog("commentDialog")
+                                        }
+                                      }
+                                    },
+                                    [_c("md-icon", [_vm._v("comment")])],
+                                    1
+                                  )
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "md-list-item",
+                                [
+                                  _c(
+                                    "md-button",
+                                    {
+                                      staticClass:
+                                        "md-icon-button md-list-action",
+                                      attrs: {
+                                        disabled: _vm.show === "history"
+                                      },
+                                      on: {
+                                        click: function($event) {
+                                          _vm.show = "history"
+                                        }
+                                      }
+                                    },
+                                    [_c("md-icon", [_vm._v("history")])],
+                                    1
+                                  )
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "md-list-item",
+                                [
+                                  _c(
+                                    "md-button",
+                                    {
+                                      staticClass:
+                                        "md-icon-button md-list-action",
+                                      attrs: { disabled: _vm.show === "edit" },
+                                      on: {
+                                        click: function($event) {
+                                          _vm.show = "edit"
+                                        }
+                                      }
+                                    },
+                                    [_c("md-icon", [_vm._v("mode_edit")])],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      ),
                       _vm._v(" "),
-                      _vm._l(_vm.el.comments, function(comment) {
-                        return comment.version === _vm.el.version
+                      _c("md-layout", { attrs: { "md-flex": "60" } }, [
+                        _vm.show === "description"
                           ? _c(
+                              "div",
+                              {
+                                staticClass: "description",
+                                on: {
+                                  mouseup: function($event) {
+                                    _vm.getHighlighted()
+                                  }
+                                }
+                              },
+                              [
+                                _c("div", {
+                                  attrs: { id: "desc_" + _vm.el.id },
+                                  domProps: {
+                                    innerHTML: _vm._s(_vm.description)
+                                  }
+                                })
+                              ]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.show === "history"
+                          ? _c(
+                              "div",
+                              [
+                                _vm._l(_vm.el.history, function(
+                                  history,
+                                  index
+                                ) {
+                                  return _c(
+                                    "md-button",
+                                    {
+                                      staticClass: "md-fab md-clean md-mini",
+                                      attrs: {
+                                        disabled:
+                                          _vm.showHistory.id === history.id
+                                      },
+                                      on: {
+                                        click: function($event) {
+                                          _vm.setHistoryDisplay(index, history)
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                              " +
+                                          _vm._s(history.version) +
+                                          "\n                        "
+                                      )
+                                    ]
+                                  )
+                                }),
+                                _vm._v(" "),
+                                _vm.historyDisplay
+                                  ? _c(
+                                      "div",
+                                      [
+                                        _c("diff-history", {
+                                          attrs: {
+                                            original: _vm.getOriginal(),
+                                            history: _vm.showHistory
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  : _vm._e()
+                              ],
+                              2
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.show === "edit"
+                          ? _c(
+                              "div",
+                              { staticClass: "md-flex-100" },
+                              [
+                                _c("list-form", {
+                                  attrs: {
+                                    el: _vm.el,
+                                    method: "PUT",
+                                    action: "/api/lists/" + _vm.el.id
+                                  },
+                                  on: { update: _vm.onElementUpdate }
+                                })
+                              ],
+                              1
+                            )
+                          : _vm._e()
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "md-layout",
+                        { attrs: { "md-flex": "30" } },
+                        [
+                          _c("md-subheader", [_vm._v("Kommentare")]),
+                          _vm._v(" "),
+                          _vm.comments.length === 0
+                            ? _c(
+                                "md-card",
+                                {
+                                  staticClass: "md-flex-100",
+                                  attrs: { "md-theme": "comment_card" }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                        (Keine Kommentare vorhanden)\n                    "
+                                  )
+                                ]
+                              )
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _vm._l(_vm.comments, function(comment) {
+                            return _c(
                               "md-card",
-                              { attrs: { "md-theme": "comment_card" } },
+                              {
+                                staticClass: "md-flex-100",
+                                attrs: { "md-theme": "comment_card" }
+                              },
                               [
                                 _c("md-card-header", [
                                   _c("div", { staticClass: "md-title" }, [
@@ -46791,90 +48103,102 @@ var render = function() {
                                   ]),
                                   _vm._v(" "),
                                   _c("div", { staticClass: "md-subhead" }, [
-                                    _vm._v("Am: " + _vm._s(comment.created_at))
+                                    _vm._v(
+                                      "Am: " +
+                                        _vm._s(comment.created_at) +
+                                        " (Für Version " +
+                                        _vm._s(comment.version) +
+                                        ")"
+                                    )
                                   ])
                                 ]),
                                 _vm._v(" "),
                                 _c("md-card-content", [
                                   _vm._v(
-                                    "\n                " +
+                                    "\n                        " +
                                       _vm._s(comment.content) +
-                                      "\n              "
+                                      "\n                      "
                                   )
-                                ])
+                                ]),
+                                _vm._v(" "),
+                                _vm.show === "description"
+                                  ? _c(
+                                      "md-card-actions",
+                                      [
+                                        _c(
+                                          "md-button",
+                                          {
+                                            on: {
+                                              click: function($event) {
+                                                _vm.getCommentedMark(comment)
+                                              }
+                                            }
+                                          },
+                                          [_c("md-icon", [_vm._v("search")])],
+                                          1
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  : _vm._e()
                               ],
                               1
                             )
-                          : _vm._e()
-                      })
+                          })
+                        ],
+                        2
+                      )
                     ],
-                    2
-                  )
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.show === "history"
-                ? _c(
-                    "md-card-content",
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "md-dialog",
+                    { ref: "commentDialog" },
                     [
-                      _vm._l(_vm.el.history, function(history, index) {
-                        return _c(
-                          "md-button",
-                          {
-                            staticClass: "md-fab md-clean md-mini",
-                            attrs: {
-                              disabled: _vm.showHistory.id === history.id
-                            },
-                            on: {
-                              click: function($event) {
-                                _vm.setHistoryDisplay(index, history)
-                              }
-                            }
-                          },
-                          [
-                            _vm._v(
-                              "\n                      " +
-                                _vm._s(history.version) +
-                                "\n                "
-                            )
-                          ]
-                        )
-                      }),
+                      _c("md-dialog-title", [
+                        _vm._v("Kommentiere Textabschnitt")
+                      ]),
                       _vm._v(" "),
-                      _vm.historyDisplay
-                        ? _c(
-                            "div",
-                            [
-                              _c("diff-history", {
-                                attrs: {
-                                  original: _vm.getOriginal(),
-                                  history: _vm.showHistory
+                      _c(
+                        "md-dialog-content",
+                        [
+                          _c("comment-form", {
+                            attrs: {
+                              el: _vm.commentObj,
+                              method: "POST",
+                              action: "/api/comments/"
+                            },
+                            on: { create: _vm.onCommentCreated }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "md-dialog-actions",
+                        [
+                          _c(
+                            "md-button",
+                            {
+                              staticClass: "md-primary",
+                              on: {
+                                click: function($event) {
+                                  _vm.closeDialog("commentDialog")
                                 }
-                              })
-                            ],
-                            1
+                              }
+                            },
+                            [_vm._v("X")]
                           )
-                        : _vm._e()
-                    ],
-                    2
-                  )
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.show === "edit"
-                ? _c(
-                    "md-card-content",
-                    [
-                      _c("list-form", {
-                        attrs: {
-                          el: _vm.el,
-                          method: "PUT",
-                          action: "/api/lists/" + _vm.el.id
-                        },
-                        on: { update: _vm.onElementUpdate }
-                      })
+                        ],
+                        1
+                      )
                     ],
                     1
                   )
-                : _vm._e()
+                ],
+                1
+              )
             ],
             1
           )
@@ -46896,19 +48220,19 @@ if (false) {
 }
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(81)
+  __webpack_require__(82)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(83)
+var __vue_script__ = __webpack_require__(84)
 /* template */
-var __vue_template__ = __webpack_require__(84)
+var __vue_template__ = __webpack_require__(85)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -46948,13 +48272,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(82);
+var content = __webpack_require__(83);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -46974,7 +48298,7 @@ if(false) {
 }
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -46988,7 +48312,7 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -47048,7 +48372,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -47123,19 +48447,19 @@ if (false) {
 }
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(86)
+  __webpack_require__(87)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(88)
+var __vue_script__ = __webpack_require__(89)
 /* template */
-var __vue_template__ = __webpack_require__(89)
+var __vue_template__ = __webpack_require__(90)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -47175,13 +48499,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(87);
+var content = __webpack_require__(88);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -47201,7 +48525,7 @@ if(false) {
 }
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -47209,13 +48533,13 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -47243,11 +48567,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     props: ['el', 'method', 'action'],
     data: function data() {
         return {
-            errors: []
+            errors: [],
+            obj: this.el
         };
     },
-    created: function created() {},
 
+    watch: {
+        'obj.position': function objPosition(newVal, oldVal) {
+            console.log(newVal);
+        }
+    },
 
     methods: {
         onFormSubmit: function onFormSubmit() {
@@ -47256,7 +48585,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios({
                 method: this.method,
                 url: this.action,
-                data: this.el
+                data: this.obj
             }).then(function (response) {
                 // success
                 _this.errors = [];
@@ -47271,7 +48600,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -47292,11 +48621,11 @@ var render = function() {
               _vm._v(" "),
               _c("md-textarea", {
                 model: {
-                  value: _vm.el.content,
+                  value: _vm.obj.content,
                   callback: function($$v) {
-                    _vm.$set(_vm.el, "content", $$v)
+                    _vm.$set(_vm.obj, "content", $$v)
                   },
-                  expression: "el.content"
+                  expression: "obj.content"
                 }
               })
             ],
@@ -47331,19 +48660,19 @@ if (false) {
 }
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(91)
+  __webpack_require__(92)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(93)
+var __vue_script__ = __webpack_require__(94)
 /* template */
-var __vue_template__ = __webpack_require__(94)
+var __vue_template__ = __webpack_require__(95)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -47383,13 +48712,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(92);
+var content = __webpack_require__(93);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -47409,7 +48738,7 @@ if(false) {
 }
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -47423,7 +48752,7 @@ exports.push([module.i, "\n.diff {\n    background: #fff;\n    padding: 8px;\n}\
 
 
 /***/ }),
-/* 93 */
+/* 94 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -47480,7 +48809,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 94 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -47513,19 +48842,19 @@ if (false) {
 }
 
 /***/ }),
-/* 95 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(96)
+  __webpack_require__(97)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(98)
+var __vue_script__ = __webpack_require__(99)
 /* template */
-var __vue_template__ = __webpack_require__(99)
+var __vue_template__ = __webpack_require__(100)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -47565,13 +48894,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 96 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(97);
+var content = __webpack_require__(98);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -47591,7 +48920,7 @@ if(false) {
 }
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -47605,7 +48934,7 @@ exports.push([module.i, "\n.action-link[data-v-1522a1d2] {\n    cursor: pointer;
 
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -47973,7 +49302,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -48520,19 +49849,19 @@ if (false) {
 }
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(101)
+  __webpack_require__(102)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(103)
+var __vue_script__ = __webpack_require__(104)
 /* template */
-var __vue_template__ = __webpack_require__(104)
+var __vue_template__ = __webpack_require__(105)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -48572,13 +49901,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(102);
+var content = __webpack_require__(103);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -48598,7 +49927,7 @@ if(false) {
 }
 
 /***/ }),
-/* 102 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -48612,7 +49941,7 @@ exports.push([module.i, "\n.action-link[data-v-75640c88] {\n    cursor: pointer;
 
 
 /***/ }),
-/* 103 */
+/* 104 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -48736,7 +50065,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 104 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -48845,19 +50174,19 @@ if (false) {
 }
 
 /***/ }),
-/* 105 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(106)
+  __webpack_require__(107)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(108)
+var __vue_script__ = __webpack_require__(109)
 /* template */
-var __vue_template__ = __webpack_require__(109)
+var __vue_template__ = __webpack_require__(110)
 /* template functional */
   var __vue_template_functional__ = false
 /* styles */
@@ -48897,13 +50226,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 106 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(107);
+var content = __webpack_require__(108);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -48923,7 +50252,7 @@ if(false) {
 }
 
 /***/ }),
-/* 107 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -48937,7 +50266,7 @@ exports.push([module.i, "\n.action-link[data-v-4fcbae02] {\n    cursor: pointer;
 
 
 /***/ }),
-/* 108 */
+/* 109 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -49263,7 +50592,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 /***/ }),
-/* 109 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -49635,7 +50964,7 @@ if (false) {
 }
 
 /***/ }),
-/* 110 */
+/* 111 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
