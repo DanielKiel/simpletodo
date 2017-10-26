@@ -22,7 +22,7 @@
                                 <md-button class="md-icon-button md-list-action" @click="show = 'description'" :disabled="show === 'description'"> <md-icon>description</md-icon> </md-button>
                             </md-list-item>
                             <md-list-item>
-                                <md-button class="md-icon-button md-list-action" @click="openDialog('commentDialog')" :disabled="show === 'comments'"> <md-icon>comment</md-icon> </md-button>
+                                <md-button class="md-icon-button md-list-action" @click="openDialog('commentDialog')" :disabled="show === 'comments'"> <md-icon>insert_comment</md-icon> </md-button>
                             </md-list-item>
                             <md-list-item>
                                 <md-button class="md-icon-button md-list-action" @click="show = 'history'" :disabled="show === 'history'"> <md-icon>history</md-icon> </md-button>
@@ -73,8 +73,10 @@
                           <md-card-content>
                             <div class="md-body-1">{{comment.content}}</div>
                           </md-card-content>
-                          <md-card-actions v-if="show === 'description'">
+
+                          <md-card-actions v-if="hasCommentFooter(comment) === true">
                             <md-button @click="getCommentedMark(comment)"><md-icon>search</md-icon></md-button>
+                            <span class="md-caption"><span class="marked-text">Markierter Text:</span> {{comment.position.description.text}}</span>
                           </md-card-actions>
                         </md-card>
 
@@ -264,6 +266,25 @@
                     this.$refs[ref].close();
                 }
 
+            },
+            hasCommentFooter(comment) {
+                if (this.show !== 'description') {
+                    return false
+                }
+
+                if (comment.position === undefined) {
+                    return false
+                }
+
+                if (comment.position.description === undefined) {
+                    return false
+                }
+
+                if (comment.position.description.text === undefined) {
+                    return false
+                }
+
+                return true
             }
         }
     }
@@ -273,6 +294,15 @@
 
 .commented {
     background: yellow;
+}
+
+.marked-text {
+    font-weight: bold;
+    color: #000;
+}
+
+.description {
+    padding-left: 40px;
 }
 
 </style>

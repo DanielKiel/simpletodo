@@ -1,27 +1,42 @@
 <template>
-    <div>
-        <div class="phone-viewport">
-            <md-toolbar>
-            <span class="md-title">Liste: {{token}}</span>
-            </md-toolbar>
+    <md-layout class="md-align-center">
+        <md-card>
+            <md-card-content>
+                <md-table-card>
+                    <md-toolbar>
+                        <h1 class="md-title">Liste: {{token}}</h1>
 
-            <md-list>
-                <list-el-default v-for="(item, index) in data.data" :el="item"></list-el-default>
-            </md-list>
+                        <md-button class="md-icon-button md-fab md-mini" @click="openDialog('elDialog')">
+                          <md-icon>control_point</md-icon>
+                        </md-button>
+                    </md-toolbar>
+                    <md-list>
+                        <list-el-default v-for="(item, index) in data.data" :el="item"></list-el-default>
+                    </md-list>
+                    <md-table-pagination
+                        :md-size="data.per_page"
+                        :md-total="data.total"
+                        :md-page="data.current_page"
+                        md-label="Element"
+                        md-separator="von"
+                        :md-page-options="[5, 15, 50]"
+                        @pagination="onPagination">
+                    </md-table-pagination>
+                </md-table-card>
+            </md-card-content>
+        </md-card>
 
-            <md-layout md-flex="25" md-align="end">
-                <md-table-pagination
-                    :md-size="data.per_page"
-                    :md-total="data.total"
-                    :md-page="data.current_page"
-                    md-label="Element"
-                    md-separator="von"
-                    :md-page-options="[5, 15, 50]"
-                    @pagination="onPagination">
-                </md-table-pagination>
-            </md-layout>
-        </div>
-    </div>
+
+        <md-dialog ref="elDialog">
+          <md-dialog-content>
+            <list-form method="POST" action="/api/lists" :el="newObj" @create="onElementCreated"></list-form>
+          </md-dialog-content>
+
+          <md-dialog-actions>
+            <md-button class="md-primary" @click="closeDialog('elDialog')">X</md-button>
+          </md-dialog-actions>
+        </md-dialog>
+    </md-layout>
 
 </template>
 
@@ -36,6 +51,11 @@
                 url: this.api,
                 display: false,
                 error: '',
+                newObj: {
+                    title: '',
+                    token: this.token,
+                    description: ''
+                },
                 data: {}
             }
         },
@@ -45,6 +65,11 @@
         },
 
         methods: {
+            onElementCreated() {
+                this.fetchData()
+
+                this.closeDialog('elDialog')
+            },
             show() {
                 this.display = true
             },
@@ -52,13 +77,14 @@
                 this.display = false
             },
             onPagination(event) {
+
                 axios.get(this.data.path,{
                     params : {
                         page: event.page,
                         per_page: event.size
                     }
-                }).then((r) => {
-                    this.data = r.data
+                }).then((response) => {
+                    this.data = response.data
                 })
             },
 
@@ -72,6 +98,7 @@
                         this.loading = false
                         this.data = response.data
 
+                        this.$set(this.newObj, 'weight', response.data.total)
                         this.show()
                     }, ( /* response */ ) => {
                     // error callback
@@ -80,6 +107,19 @@
                     flash(this.error, 'error')
                     this.hide()
                 })
+            },
+
+            openDialog(ref) {
+                if (this.$refs[ref] !== undefined) {
+                     this.$refs[ref].open();
+                }
+
+            },
+            closeDialog(ref) {
+                if (this.$refs[ref] !== undefined) {
+                    this.$refs[ref].close();
+                }
+
             }
         }
     }

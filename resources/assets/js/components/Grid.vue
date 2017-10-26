@@ -1,62 +1,37 @@
 <template>
-    <div>
-        <div class="table-responsive" role="alert" v-show="display">
-            <table class="table table-hover table-striped">
-                <thead>
-                    <tr>
-                        <th v-for="head in header" class="text-left">
-                            {{ head.title }}
-                        </th>
-                        <th class="text-right">
-                            Actions
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="row in data.data">
-                        <td v-for="head in header">
-                            {{ getValue(row, head.name) }}
-                        </td>
-                        <td class="td-actions text-right">
-                            <vlink v-for="(link, idx) in getLinks()" :vclass="link.class" :href="getLinkUrl(link, row[link.replace])" :icon="link.icon" :ajax="link.ajax" :method="link.method" :target="link.target" :key="idx"></vlink>
-                        </td>
-                    </tr>
-                </tbody>
+    <md-table-card>
+        <md-toolbar>
+            <vlink v-for="(link, idx) in toolbar" :vclass="link.class" :href="link.href" :icon="link.icon" :ajax="link.ajax" :method="link.method" :target="link.target" :key="idx"></vlink>
+        </md-toolbar>
+        <md-table v-show="display">
+          <md-table-header>
+            <md-table-row>
+              <md-table-head v-for="head in header"> {{ head.title }} </md-table-head>
+              <md-table-head md-numeric> Actions </md-table-head>
+            </md-table-row>
+          </md-table-header>
 
-            </table>
+          <md-table-body>
+            <md-table-row v-for="(row, index) in data.data" :key="index">
+              <md-table-cell v-for="head in header"> {{ getValue(row, head.name) }} </md-table-cell>
+              <md-table-cell>
+                    <vlink v-for="(link, idx) in getLinks()" :vclass="link.class" :href="getLinkUrl(link, row[link.replace])" :icon="link.icon" :ajax="link.ajax" :method="link.method" :target="link.target" :key="idx"></vlink>
+              </md-table-cell>
+            </md-table-row>
+          </md-table-body>
+        </md-table>
 
-            {{ data.from }} - {{ data.to }} von {{ data.total }}
+        <md-table-pagination
+            :md-size="data.per_page"
+            :md-total="data.total"
+            :md-page="data.current_page"
+            md-label="Element"
+            md-separator="von"
+            :md-page-options="[5, 15, 50]"
+            @pagination="onPagination">
+        </md-table-pagination>
 
-        </div>
-        <nav aria-label="Page navigation" v-if="data.total > data.per_page">
-            <ul class="pagination">
-                <li v-bind:class="[data.prev_page_url != null ? '' : 'disabled']">
-                    <a href="#" aria-label="Previous" @click.prevent="selectPage(1)">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li v-bind:class="[data.prev_page_url != null ? '' : 'disabled']">
-                    <a href="#" aria-label="Previous" @click.prevent="showPrevPage">
-                        <span aria-hidden="true">&lsaquo;</span>
-                    </a>
-                </li>
-                <li class="page-item" v-for="n in getPages()" :class="{ 'active': n == data.current_page }">
-                    <a class="page-link" href="#" @click.prevent="selectPage(n)">{{ n }}</a>
-                </li>
-                <li v-bind:class="[data.next_page_url != null ? '' : 'disabled']">
-                    <a aria-label="Next" @click.prevent="showNextPage">
-                        <span aria-hidden="true">&rsaquo;</span>
-                    </a>
-                </li>
-                <li v-bind:class="[data.next_page_url != null ? '' : 'disabled']">
-                    <a aria-label="Next" @click.prevent="selectPage(data.last_page)">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-
+    </md-table-card>
 </template>
 
 <script>
@@ -64,7 +39,8 @@
         props: [
             'api',
             'header',
-            'links'
+            'links',
+            'toolbar'
         ],
         data () {
             return {
@@ -93,33 +69,19 @@
             },
 
             getLinkUrl(link, id) {
-                let str = link.href; console.log(id, link);
+                let str = link.href;
                 return str.replace('_id_', id);
             },
 
-            selectPage(n) {
-                axios.get(this.data.path,{
-                    params : {
-                        page:n
-                    }
-                }).then((r) => {
-                    this.data = r.data
-                    flash('Page ' + this.data.current_page + ' fetched')
-                })
-            },
-            getPages: function() {
-
-                var start = 1,
-                    end = this.data.last_page,
-                    current = this.data.current_page,
-                    pages = [],
-                    index
-
-                for (index = start; index <= end; index++) {
-                    pages.push(index)
-                }
-
-                return pages
+            onPagination(event) {
+               axios.get(this.data.path,{
+                   params : {
+                       page: event.page,
+                       per_page: event.size
+                   }
+               }).then((r) => {
+                   this.data = r.data
+               })
             },
             show() {
                 this.display = true

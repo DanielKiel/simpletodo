@@ -18,16 +18,34 @@
 
 <div id="app">
 
-    <md-layout>
+    <md-layout md-flex="100">
         <vmenu></vmenu>
     </md-layout>
 
-    <md-layout>
+    <md-layout md-gutter="24">
 
         <md-layout md-row>
             @yield('content')
         </md-layout>
 
+    </md-layout>
+
+    <md-layout>
+        <md-layout md-flex="33">
+            <md-subheader>
+                About
+            </md-subheader>
+        </md-layout>
+        <md-layout md-flex="33">
+            <md-subheader>
+                Column 2
+            </md-subheader>
+        </md-layout>
+        <md-layout md-flex="33">
+            <md-subheader>
+                Column 3
+            </md-subheader>
+        </md-layout>
     </md-layout>
 
 </div>

@@ -13,8 +13,8 @@ class Dashboard extends Controller
             [
                 'href' => route('backend.list', ['token' => '_id_']),
                 'title' => 'view',
-                'icon' => 'glyphicon glyphicon-eye-open',
-                'class' => 'btn btn-simple',
+                'icon' => 'subject',
+                'class' => '',
                 'ajax' => false,
                 'replace' => 'token'
             ]
@@ -26,7 +26,7 @@ class Dashboard extends Controller
         ]);
     }
 
-    public function viewList($token)
+    public function viewList($token = null)
     {
         return view('backend.dashboard.view_list',[
             'token' => $token,

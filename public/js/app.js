@@ -46009,7 +46009,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -46083,11 +46083,38 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     methods: {
         toggleLeftSidenav: function toggleLeftSidenav() {
             this.$refs.leftSidenav.toggle();
+        },
+        logout: function logout() {
+            axios.post('/logout').then(function (response) {
+                window.location.href = '/';
+            });
         }
     }
 });
@@ -46102,6 +46129,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
+    { staticClass: "md-flex-100" },
     [
       _c(
         "md-toolbar",
@@ -46125,15 +46153,8 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "md-button",
-                { staticClass: "md-icon-button" },
+                { staticClass: "md-icon-button md-align-end" },
                 [_c("md-icon", [_vm._v("search")])],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "md-button",
-                { staticClass: "md-icon-button" },
-                [_c("md-icon", [_vm._v("filter_list")])],
                 1
               )
             ],
@@ -46148,9 +46169,69 @@ var render = function() {
         [
           _c("md-toolbar", { staticClass: "md-large" }, [
             _c("div", { staticClass: "md-toolbar-container" }, [
-              _c("h3", { staticClass: "md-title" }, [_vm._v("Sidenav content")])
+              _c("h3", { staticClass: "md-title" }, [_vm._v("Actions")])
             ])
-          ])
+          ]),
+          _vm._v(" "),
+          _c(
+            "md-list",
+            [
+              _c(
+                "md-list-item",
+                { attrs: { href: "/backend/lists" } },
+                [
+                  _c("span", [_vm._v("Listen")]),
+                  _vm._v(" "),
+                  _c(
+                    "md-button",
+                    { staticClass: "md-icon-button md-list-action" },
+                    [_c("md-icon", [_vm._v("list")])],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "md-list-item",
+                { attrs: { href: "/backend/account" } },
+                [
+                  _c("span", [_vm._v("Account")]),
+                  _vm._v(" "),
+                  _c(
+                    "md-button",
+                    { staticClass: "md-icon-button md-list-action" },
+                    [_c("md-icon", [_vm._v("account_box")])],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "md-list-item",
+                {
+                  on: {
+                    click: function($event) {
+                      _vm.logout()
+                    }
+                  }
+                },
+                [
+                  _c("span", [_vm._v("Abmelden")]),
+                  _vm._v(" "),
+                  _c(
+                    "md-button",
+                    { staticClass: "md-icon-button md-list-action" },
+                    [_c("md-icon", [_vm._v("exit_to_app")])],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
         ],
         1
       )
@@ -46444,7 +46525,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -46482,6 +46563,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['api', 'token'],
@@ -46490,6 +46586,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             url: this.api,
             display: false,
             error: '',
+            newObj: {
+                title: '',
+                token: this.token,
+                description: ''
+            },
             data: {}
         };
     },
@@ -46499,6 +46600,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
     methods: {
+        onElementCreated: function onElementCreated() {
+            this.fetchData();
+
+            this.closeDialog('elDialog');
+        },
         show: function show() {
             this.display = true;
         },
@@ -46513,8 +46619,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     page: event.page,
                     per_page: event.size
                 }
-            }).then(function (r) {
-                _this.data = r.data;
+            }).then(function (response) {
+                _this.data = response.data;
             });
         },
         shortTitle: function shortTitle(title) {
@@ -46527,6 +46633,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 _this2.loading = false;
                 _this2.data = response.data;
 
+                _this2.$set(_this2.newObj, 'weight', response.data.total);
                 _this2.show();
             }, function () /* response */{
                 // error callback
@@ -46535,6 +46642,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 flash(_this2.error, 'error');
                 _this2.hide();
             });
+        },
+        openDialog: function openDialog(ref) {
+            if (this.$refs[ref] !== undefined) {
+                this.$refs[ref].open();
+            }
+        },
+        closeDialog: function closeDialog(ref) {
+            if (this.$refs[ref] !== undefined) {
+                this.$refs[ref].close();
+            }
         }
     }
 });
@@ -46547,46 +46664,110 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c(
-      "div",
-      { staticClass: "phone-viewport" },
-      [
-        _c("md-toolbar", [
-          _c("span", { staticClass: "md-title" }, [
-            _vm._v("Liste: " + _vm._s(_vm.token))
-          ])
-        ]),
-        _vm._v(" "),
-        _c(
-          "md-list",
-          _vm._l(_vm.data.data, function(item, index) {
-            return _c("list-el-default", { attrs: { el: item } })
-          })
-        ),
-        _vm._v(" "),
-        _c(
-          "md-layout",
-          { attrs: { "md-flex": "25", "md-align": "end" } },
-          [
-            _c("md-table-pagination", {
-              attrs: {
-                "md-size": _vm.data.per_page,
-                "md-total": _vm.data.total,
-                "md-page": _vm.data.current_page,
-                "md-label": "Element",
-                "md-separator": "von",
-                "md-page-options": [5, 15, 50]
-              },
-              on: { pagination: _vm.onPagination }
-            })
-          ],
-          1
-        )
-      ],
-      1
-    )
-  ])
+  return _c(
+    "md-layout",
+    { staticClass: "md-align-center" },
+    [
+      _c(
+        "md-card",
+        [
+          _c(
+            "md-card-content",
+            [
+              _c(
+                "md-table-card",
+                [
+                  _c(
+                    "md-toolbar",
+                    [
+                      _c("h1", { staticClass: "md-title" }, [
+                        _vm._v("Liste: " + _vm._s(_vm.token))
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "md-button",
+                        {
+                          staticClass: "md-icon-button md-fab md-mini",
+                          on: {
+                            click: function($event) {
+                              _vm.openDialog("elDialog")
+                            }
+                          }
+                        },
+                        [_c("md-icon", [_vm._v("control_point")])],
+                        1
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "md-list",
+                    _vm._l(_vm.data.data, function(item, index) {
+                      return _c("list-el-default", { attrs: { el: item } })
+                    })
+                  ),
+                  _vm._v(" "),
+                  _c("md-table-pagination", {
+                    attrs: {
+                      "md-size": _vm.data.per_page,
+                      "md-total": _vm.data.total,
+                      "md-page": _vm.data.current_page,
+                      "md-label": "Element",
+                      "md-separator": "von",
+                      "md-page-options": [5, 15, 50]
+                    },
+                    on: { pagination: _vm.onPagination }
+                  })
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "md-dialog",
+        { ref: "elDialog" },
+        [
+          _c(
+            "md-dialog-content",
+            [
+              _c("list-form", {
+                attrs: { method: "POST", action: "/api/lists", el: _vm.newObj },
+                on: { create: _vm.onElementCreated }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "md-dialog-actions",
+            [
+              _c(
+                "md-button",
+                {
+                  staticClass: "md-primary",
+                  on: {
+                    click: function($event) {
+                      _vm.closeDialog("elDialog")
+                    }
+                  }
+                },
+                [_vm._v("X")]
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -46747,13 +46928,14 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
-    "a",
+    "md-button",
     {
       class: _vm.vclass,
       attrs: { href: _vm.href, title: _vm.title, target: _vm.getTarget() },
       on: { click: _vm.onClick }
     },
-    [_c("i", { class: _vm.icon })]
+    [_c("md-icon", [_vm._v(_vm._s(_vm.icon))])],
+    1
   )
 }
 var staticRenderFns = []
@@ -46853,7 +47035,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -46900,34 +47082,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['api', 'header', 'links'],
+    props: ['api', 'header', 'links', 'toolbar'],
     data: function data() {
         return {
             url: this.api,
@@ -46953,35 +47110,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             return JSON.parse(this.links);
         },
         getLinkUrl: function getLinkUrl(link, id) {
-            var str = link.href;console.log(id, link);
+            var str = link.href;
             return str.replace('_id_', id);
         },
-        selectPage: function selectPage(n) {
+        onPagination: function onPagination(event) {
             var _this = this;
 
             axios.get(this.data.path, {
                 params: {
-                    page: n
+                    page: event.page,
+                    per_page: event.size
                 }
             }).then(function (r) {
                 _this.data = r.data;
-                flash('Page ' + _this.data.current_page + ' fetched');
             });
-        },
-
-        getPages: function getPages() {
-
-            var start = 1,
-                end = this.data.last_page,
-                current = this.data.current_page,
-                pages = [],
-                index;
-
-            for (index = start; index <= end; index++) {
-                pages.push(index);
-            }
-
-            return pages;
         },
         show: function show() {
             this.display = true;
@@ -47016,66 +47158,76 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c(
-      "div",
-      {
-        directives: [
-          {
-            name: "show",
-            rawName: "v-show",
-            value: _vm.display,
-            expression: "display"
-          }
-        ],
-        staticClass: "table-responsive",
-        attrs: { role: "alert" }
-      },
-      [
-        _c("table", { staticClass: "table table-hover table-striped" }, [
-          _c("thead", [
-            _c(
-              "tr",
-              [
-                _vm._l(_vm.header, function(head) {
-                  return _c("th", { staticClass: "text-left" }, [
-                    _vm._v(
-                      "\n                        " +
-                        _vm._s(head.title) +
-                        "\n                    "
-                    )
-                  ])
-                }),
-                _vm._v(" "),
-                _c("th", { staticClass: "text-right" }, [
-                  _vm._v(
-                    "\n                        Actions\n                    "
-                  )
-                ])
-              ],
-              2
-            )
-          ]),
-          _vm._v(" "),
+  return _c(
+    "md-table-card",
+    [
+      _c(
+        "md-toolbar",
+        _vm._l(_vm.toolbar, function(link, idx) {
+          return _c("vlink", {
+            key: idx,
+            attrs: {
+              vclass: link.class,
+              href: link.href,
+              icon: link.icon,
+              ajax: link.ajax,
+              method: link.method,
+              target: link.target
+            }
+          })
+        })
+      ),
+      _vm._v(" "),
+      _c(
+        "md-table",
+        {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.display,
+              expression: "display"
+            }
+          ]
+        },
+        [
           _c(
-            "tbody",
-            _vm._l(_vm.data.data, function(row) {
-              return _c(
-                "tr",
+            "md-table-header",
+            [
+              _c(
+                "md-table-row",
                 [
                   _vm._l(_vm.header, function(head) {
-                    return _c("td", [
-                      _vm._v(
-                        "\n                        " +
-                          _vm._s(_vm.getValue(row, head.name)) +
-                          "\n                    "
-                      )
+                    return _c("md-table-head", [
+                      _vm._v(" " + _vm._s(head.title) + " ")
+                    ])
+                  }),
+                  _vm._v(" "),
+                  _c("md-table-head", { attrs: { "md-numeric": "" } }, [
+                    _vm._v(" Actions ")
+                  ])
+                ],
+                2
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "md-table-body",
+            _vm._l(_vm.data.data, function(row, index) {
+              return _c(
+                "md-table-row",
+                { key: index },
+                [
+                  _vm._l(_vm.header, function(head) {
+                    return _c("md-table-cell", [
+                      _vm._v(" " + _vm._s(_vm.getValue(row, head.name)) + " ")
                     ])
                   }),
                   _vm._v(" "),
                   _c(
-                    "td",
-                    { staticClass: "td-actions text-right" },
+                    "md-table-cell",
                     _vm._l(_vm.getLinks(), function(link, idx) {
                       return _c("vlink", {
                         key: idx,
@@ -47095,152 +47247,24 @@ var render = function() {
               )
             })
           )
-        ]),
-        _vm._v(
-          "\n\n        " +
-            _vm._s(_vm.data.from) +
-            " - " +
-            _vm._s(_vm.data.to) +
-            " von " +
-            _vm._s(_vm.data.total) +
-            "\n\n    "
-        )
-      ]
-    ),
-    _vm._v(" "),
-    _vm.data.total > _vm.data.per_page
-      ? _c("nav", { attrs: { "aria-label": "Page navigation" } }, [
-          _c(
-            "ul",
-            { staticClass: "pagination" },
-            [
-              _c(
-                "li",
-                { class: [_vm.data.prev_page_url != null ? "" : "disabled"] },
-                [
-                  _c(
-                    "a",
-                    {
-                      attrs: { href: "#", "aria-label": "Previous" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          _vm.selectPage(1)
-                        }
-                      }
-                    },
-                    [
-                      _c("span", { attrs: { "aria-hidden": "true" } }, [
-                        _vm._v("«")
-                      ])
-                    ]
-                  )
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "li",
-                { class: [_vm.data.prev_page_url != null ? "" : "disabled"] },
-                [
-                  _c(
-                    "a",
-                    {
-                      attrs: { href: "#", "aria-label": "Previous" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          _vm.showPrevPage($event)
-                        }
-                      }
-                    },
-                    [
-                      _c("span", { attrs: { "aria-hidden": "true" } }, [
-                        _vm._v("‹")
-                      ])
-                    ]
-                  )
-                ]
-              ),
-              _vm._v(" "),
-              _vm._l(_vm.getPages(), function(n) {
-                return _c(
-                  "li",
-                  {
-                    staticClass: "page-item",
-                    class: { active: n == _vm.data.current_page }
-                  },
-                  [
-                    _c(
-                      "a",
-                      {
-                        staticClass: "page-link",
-                        attrs: { href: "#" },
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            _vm.selectPage(n)
-                          }
-                        }
-                      },
-                      [_vm._v(_vm._s(n))]
-                    )
-                  ]
-                )
-              }),
-              _vm._v(" "),
-              _c(
-                "li",
-                { class: [_vm.data.next_page_url != null ? "" : "disabled"] },
-                [
-                  _c(
-                    "a",
-                    {
-                      attrs: { "aria-label": "Next" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          _vm.showNextPage($event)
-                        }
-                      }
-                    },
-                    [
-                      _c("span", { attrs: { "aria-hidden": "true" } }, [
-                        _vm._v("›")
-                      ])
-                    ]
-                  )
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "li",
-                { class: [_vm.data.next_page_url != null ? "" : "disabled"] },
-                [
-                  _c(
-                    "a",
-                    {
-                      attrs: { "aria-label": "Next" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          _vm.selectPage(_vm.data.last_page)
-                        }
-                      }
-                    },
-                    [
-                      _c("span", { attrs: { "aria-hidden": "true" } }, [
-                        _vm._v("»")
-                      ])
-                    ]
-                  )
-                ]
-              )
-            ],
-            2
-          )
-        ])
-      : _vm._e()
-  ])
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("md-table-pagination", {
+        attrs: {
+          "md-size": _vm.data.per_page,
+          "md-total": _vm.data.total,
+          "md-page": _vm.data.current_page,
+          "md-label": "Element",
+          "md-separator": "von",
+          "md-page-options": [5, 15, 50]
+        },
+        on: { pagination: _vm.onPagination }
+      })
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -47539,7 +47563,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n.commented {\n    background: yellow;\n}\n\n", ""]);
+exports.push([module.i, "\n.commented {\n    background: yellow;\n}\n.marked-text {\n    font-weight: bold;\n    color: #000;\n}\n.description {\n    padding-left: 40px;\n}\n\n", ""]);
 
 // exports
 
@@ -47550,6 +47574,8 @@ exports.push([module.i, "\n.commented {\n    background: yellow;\n}\n\n", ""]);
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
 //
 //
 //
@@ -47724,9 +47750,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         onElementUpdate: function onElementUpdate(data) {
             var el = this.data;
-            //delete el.comments
-            //delete el.history
-            console.log(el, this.data);
+
             this.data.history.unshift(el);
 
             this.data = data;
@@ -47808,6 +47832,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             if (this.$refs[ref] !== undefined) {
                 this.$refs[ref].close();
             }
+        },
+        hasCommentFooter: function hasCommentFooter(comment) {
+            if (this.show !== 'description') {
+                return false;
+            }
+
+            if (comment.position === undefined) {
+                return false;
+            }
+
+            if (comment.position.description === undefined) {
+                return false;
+            }
+
+            if (comment.position.description.text === undefined) {
+                return false;
+            }
+
+            return true;
         }
     }
 });
@@ -47911,7 +47954,7 @@ var render = function() {
                                         }
                                       }
                                     },
-                                    [_c("md-icon", [_vm._v("comment")])],
+                                    [_c("md-icon", [_vm._v("insert_comment")])],
                                     1
                                   )
                                 ],
@@ -48117,7 +48160,7 @@ var render = function() {
                                   ])
                                 ]),
                                 _vm._v(" "),
-                                _vm.show === "description"
+                                _vm.hasCommentFooter(comment) === true
                                   ? _c(
                                       "md-card-actions",
                                       [
@@ -48132,6 +48175,25 @@ var render = function() {
                                           },
                                           [_c("md-icon", [_vm._v("search")])],
                                           1
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "span",
+                                          { staticClass: "md-caption" },
+                                          [
+                                            _c(
+                                              "span",
+                                              { staticClass: "marked-text" },
+                                              [_vm._v("Markierter Text:")]
+                                            ),
+                                            _vm._v(
+                                              " " +
+                                                _vm._s(
+                                                  comment.position.description
+                                                    .text
+                                                )
+                                            )
+                                          ]
                                         )
                                       ],
                                       1
@@ -48302,7 +48364,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -48313,6 +48375,14 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -48358,7 +48428,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }).then(function (response) {
                 // success
                 _this.errors = [];
-                _this.$emit('update', response.data);
+
+                if (_this.method === 'POST') {
+                    _this.$emit('create', response.data);
+                }
+
+                if (_this.method === 'PUT') {
+                    _this.$emit('update', response.data);
+                }
             }).catch(function (error) {
                 var response = error.response;
                 _this.errors = response.data.errors;
@@ -48380,12 +48457,40 @@ var render = function() {
       "form",
       { attrs: { method: _vm.method, action: _vm.action } },
       [
+        _vm.el.token === "" || _vm.el.token === undefined
+          ? _c(
+              "md-input-container",
+              [
+                _c("label", [_vm._v("Name der Liste")]),
+                _vm._v(" "),
+                _c("md-input", {
+                  attrs: { required: "" },
+                  model: {
+                    value: _vm.el.token,
+                    callback: function($$v) {
+                      _vm.$set(_vm.el, "token", $$v)
+                    },
+                    expression: "el.token"
+                  }
+                })
+              ],
+              1
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.method === "POST"
+          ? _c("md-subheader", [
+              _vm._v("\n            Listenelement anlegen\n        ")
+            ])
+          : _vm._e(),
+        _vm._v(" "),
         _c(
           "md-input-container",
           [
             _c("label", [_vm._v("Titel")]),
             _vm._v(" "),
             _c("md-input", {
+              attrs: { required: "" },
               model: {
                 value: _vm.el.title,
                 callback: function($$v) {

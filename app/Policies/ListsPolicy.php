@@ -30,7 +30,7 @@ class ListsPolicy extends SuperAdminPolicy
      */
     public function create(User $user)
     {
-        return $this->decideAccess($user, $lists);
+        return true;
     }
 
     /**

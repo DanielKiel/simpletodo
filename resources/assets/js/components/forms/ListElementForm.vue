@@ -1,10 +1,18 @@
 <template>
     <div>
         <form :method="method" :action="action">
+            <md-input-container v-if="el.token === '' || el.token === undefined ">
+                <label>Name der Liste</label>
+                <md-input v-model="el.token" required></md-input>
+            </md-input-container>
+
+            <md-subheader v-if="method === 'POST'">
+                Listenelement anlegen
+            </md-subheader>
 
             <md-input-container>
                 <label>Titel</label>
-                <md-input v-model="el.title"></md-input>
+                <md-input v-model="el.title" required></md-input>
             </md-input-container>
 
             <md-input-container>
@@ -47,7 +55,14 @@
                 }).then((response) => {
                     // success
                     this.errors = []
-                    this.$emit('update', response.data)
+
+                    if (this.method === 'POST') {
+                        this.$emit('create', response.data)
+                    }
+
+                    if (this.method === 'PUT') {
+                        this.$emit('update', response.data)
+                    }
 
                 })
                 .catch((error) => {
