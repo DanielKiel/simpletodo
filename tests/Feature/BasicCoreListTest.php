@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Lists;
 use App\ListsHistory;
+use Laravel\Passport\Passport;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -14,6 +15,8 @@ class BasicCoreListTest extends TestCase
         parent::setUp();
 
         $this->actingAs($this->admin);
+
+        Passport::actingAs($this->admin);
     }
 
     /**

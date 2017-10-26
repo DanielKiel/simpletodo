@@ -6,6 +6,7 @@ use App\Lists;
 use App\SharedList;
 use App\Tenant;
 use App\User;
+use Laravel\Passport\Passport;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -68,7 +69,7 @@ class SharedListsTest extends TestCase
     public function testWebAccess()
     {
         //user A creates some points
-        $this->actingAs($this->user_A);
+        Passport::actingAs($this->user_A);
 
         $list1 = Lists::create([
             'title' => 'myTitle1',
@@ -83,14 +84,14 @@ class SharedListsTest extends TestCase
         ]);
 
         //userB now wants to see one of them
-        $this->actingAs($this->user_B);
+        Passport::actingAs($this->user_B);
 
         $result = $this->get('/api/lists/' . $list1->id);
 
         $this->assertEquals(404, $result->getStatusCode());
 
         //userB now wants to edit one of them
-        $this->actingAs($this->user_B);
+        Passport::actingAs($this->user_B);
 
         $result = $this->put('/api/lists/' . $list1->id,[
             'title' => 'fromUserB'
@@ -99,7 +100,7 @@ class SharedListsTest extends TestCase
         $this->assertEquals(404, $result->getStatusCode());
 
         //userB now wants to delete one of them
-        $this->actingAs($this->user_B);
+        Passport::actingAs($this->user_B);
 
         $result = $this->delete('/api/lists/' . $list1->id);
 
