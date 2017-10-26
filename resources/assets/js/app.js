@@ -9,8 +9,29 @@ require('./bootstrap');
 
 
 window.Vue = require('vue');
+window.Mark = require('mark.js');
+
+let VueMaterial = require('vue-material');
 
 window.events = new Vue();
+
+Vue.use(VueMaterial);
+
+Vue.material.registerTheme({
+    default: {
+        primary: 'indigo',
+        warn: 'red',
+        background: 'white'
+    },
+    nav: {
+        primary: 'white'
+    },
+    comment_card: {
+        background: 'white'
+    }
+});
+
+
 
 window.flash = function(message, type = 'primary') {
     window.ui.showNotification(message, type)
@@ -24,11 +45,19 @@ window.flash = function(message, type = 'primary') {
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+Vue.component('vmenu', require('./components/Menu.vue'));
 Vue.component('flash', require('./components/Flash.vue'));
 Vue.component('list', require('./components/List.vue'));
 Vue.component('vlink', require('./components/Link.vue'));
 Vue.component('grid', require('./components/Grid.vue'));
+Vue.component('vdialog', require('./components/Dialog.vue'));
 
+Vue.component('list-el-default', require('./components/ListElement_Default.vue'));
+Vue.component('list-form', require('./components/forms/ListElementForm.vue'));
+
+Vue.component('comment-form', require('./components/forms/CommentForm.vue'));
+
+Vue.component('diff-history', require('./components/diffs/ListElementDiff.vue'));
 
 Vue.component(
     'passport-clients',

@@ -25,5 +25,7 @@ Route::namespace('Backend')
     ->middleware('auth')->group( function() {
         Route::get('/lists', 'Dashboard@tokens')->name('backend.tokens');
 
+        Route::get('/list/', 'Dashboard@viewList')->name('backend.list');
+
         Route::get('/list/{token}', 'Dashboard@viewList')->name('backend.list');
 });

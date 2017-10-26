@@ -1,8 +1,8 @@
 <template>
 
-    <a :href="href" :class="vclass" :title="title" :target="getTarget()" v-on:click='onClick'>
-        <i :class="icon"></i>
-    </a>
+    <md-button :href="href" :class="vclass" :title="title" :target="getTarget()" v-on:click='onClick'>
+        <md-icon>{{icon}}</md-icon>
+    </md-button>
 
 </template>
 

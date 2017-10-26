@@ -26,7 +26,8 @@ class CommentValidation extends FormRequest
         return [
             'lists_id' => 'required',
             'position' => 'required',
-            'content' => 'required'
+            'content' => 'required',
+            'version' => 'required'
         ];
     }
 }

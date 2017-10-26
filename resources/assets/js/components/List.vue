@@ -1,97 +1,42 @@
 <template>
-    <div>
-         <div class="col-md-1">
-            <ul class="list-group clearfix">
-              <li class="list-group-item"><button type="button" class="btn btn-xs btn-success"><i class="glyphicon glyphicon-plus"></i></button></li>
-              <li class="list-group-item"><button type="button" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-floppy-save"></i></button></li>
-              <li class="list-group-item"><button type="button" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-user"></i></button></li>
-            </ul>
-         </div>
+    <md-layout class="md-align-center">
+        <md-card>
+            <md-card-content>
+                <md-table-card>
+                    <md-toolbar>
+                        <h1 class="md-title">Liste: {{token}}</h1>
 
-         <div class="col-md-11">
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <div class="panel-title">Liste: {{token}}</div>
-                </div>
-                <div class="panel-body">
+                        <md-button class="md-icon-button md-fab md-mini" @click="openDialog('elDialog')">
+                          <md-icon>control_point</md-icon>
+                        </md-button>
+                    </md-toolbar>
+                    <md-list>
+                        <list-el-default v-for="(item, index) in data.data" :el="item"></list-el-default>
+                    </md-list>
+                    <md-table-pagination
+                        :md-size="data.per_page"
+                        :md-total="data.total"
+                        :md-page="data.current_page"
+                        md-label="Element"
+                        md-separator="von"
+                        :md-page-options="[5, 15, 50]"
+                        @pagination="onPagination">
+                    </md-table-pagination>
+                </md-table-card>
+            </md-card-content>
+        </md-card>
 
-                </div>
-            </div>
 
-            <div v-for="(el, index) in data.data" class="panel panel-default">
-                <div class="panel-heading">
-                    <div class="pull-right clearfix">
-                        <div class="btn-toolbar" role="toolbar" aria-label="...">
-                            <div class="btn-group" role="group" aria-label="list-comment">
-                                <button type="button" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-comment"></i></button>
-                            </div>
-                            <div class="btn-group" role="group" aria-label="list-edit">
-                                <button type="button" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-pencil"></i></button>
-                            </div>
-                            <div class="btn-group" role="group" aria-label="list-move">
-                                <button type="button" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-arrow-up"></i></button>
-                                <button type="button" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-arrow-down"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel-title">{{el.title}}</div>
-                </div>
-                <div class="panel-body">
-                    <div>
-                        {{el.description}}
-                    </div>
+        <md-dialog ref="elDialog">
+          <md-dialog-content>
+            <list-form method="POST" action="/api/lists" :el="newObj" @create="onElementCreated"></list-form>
+          </md-dialog-content>
 
-                    <div v-if="el.history.length > 0">
-                        <h4>Versionierung</h4>
-                        <div v-for="history in el.history">
-                            <button class="btn btn-xs btn-default"><span class="badge">{{history.version}}</span></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel-footer">
-                    <h4>Kommentare</h4>
-                    <div v-for="comment in el.comments" v-if="comment.version === el.version">
-                        <div class="clearfix">
-                            <div class="pull-right">
-                                <div class="label label-info">{{comment.by_user.name}} (am {{comment.created_at}})</div>
-                            </div>
-                            {{comment.content}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-         </div>
-
-        <div>{{ data.from }} - {{ data.to }} von {{ data.total }}</div>
-
-        <nav aria-label="Page navigation" v-if="data.total > data.per_page">
-            <ul class="pagination">
-                <li v-bind:class="[data.prev_page_url != null ? '' : 'disabled']">
-                    <a href="#" aria-label="Previous" @click.prevent="selectPage(1)">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li v-bind:class="[data.prev_page_url != null ? '' : 'disabled']">
-                    <a href="#" aria-label="Previous" @click.prevent="showPrevPage">
-                        <span aria-hidden="true">&lsaquo;</span>
-                    </a>
-                </li>
-                <li class="page-item" v-for="n in getPages()" :class="{ 'active': n == data.current_page }">
-                    <a class="page-link" href="#" @click.prevent="selectPage(n)">{{ n }}</a>
-                </li>
-                <li v-bind:class="[data.next_page_url != null ? '' : 'disabled']">
-                    <a aria-label="Next" @click.prevent="showNextPage">
-                        <span aria-hidden="true">&rsaquo;</span>
-                    </a>
-                </li>
-                <li v-bind:class="[data.next_page_url != null ? '' : 'disabled']">
-                    <a aria-label="Next" @click.prevent="selectPage(data.last_page)">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
+          <md-dialog-actions>
+            <md-button class="md-primary" @click="closeDialog('elDialog')">X</md-button>
+          </md-dialog-actions>
+        </md-dialog>
+    </md-layout>
 
 </template>
 
@@ -106,7 +51,12 @@
                 url: this.api,
                 display: false,
                 error: '',
-                data: []
+                newObj: {
+                    title: '',
+                    token: this.token,
+                    description: ''
+                },
+                data: {}
             }
         },
 
@@ -115,29 +65,10 @@
         },
 
         methods: {
-            selectPage(n) {
-                axios.get(this.data.path,{
-                    params : {
-                        page:n
-                    }
-                }).then((r) => {
-                    this.data = r.data
-                    flash('Page ' + this.data.current_page + ' fetched')
-                })
-            },
-            getPages: function() {
+            onElementCreated() {
+                this.fetchData()
 
-                var start = 1,
-                    end = this.data.last_page,
-                    current = this.data.current_page,
-                    pages = [],
-                    index
-
-                for (index = start; index <= end; index++) {
-                    pages.push(index)
-                }
-
-                return pages
+                this.closeDialog('elDialog')
             },
             show() {
                 this.display = true
@@ -145,12 +76,29 @@
             hide() {
                 this.display = false
             },
+            onPagination(event) {
+
+                axios.get(this.data.path,{
+                    params : {
+                        page: event.page,
+                        per_page: event.size
+                    }
+                }).then((response) => {
+                    this.data = response.data
+                })
+            },
+
+            shortTitle(title) {
+                return title.slice(0, 25) + ' ...'
+            },
+
             fetchData() {
                 axios.get(this.url)
                     .then(response => {
                         this.loading = false
                         this.data = response.data
 
+                        this.$set(this.newObj, 'weight', response.data.total)
                         this.show()
                     }, ( /* response */ ) => {
                     // error callback
@@ -159,6 +107,19 @@
                     flash(this.error, 'error')
                     this.hide()
                 })
+            },
+
+            openDialog(ref) {
+                if (this.$refs[ref] !== undefined) {
+                     this.$refs[ref].open();
+                }
+
+            },
+            closeDialog(ref) {
+                if (this.$refs[ref] !== undefined) {
+                    this.$refs[ref].close();
+                }
+
             }
         }
     }
