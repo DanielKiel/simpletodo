@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Comment;
+use App\ListFile;
 use App\Lists;
 use App\Policies\CommentsPolicy;
+use App\Policies\ListFilePolicy;
 use App\Policies\ListsPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -19,7 +21,8 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Lists::class => ListsPolicy::class,
-        Comment::class => CommentsPolicy::class
+        Comment::class => CommentsPolicy::class,
+        ListFile::class => ListFilePolicy::class
     ];
 
     /**

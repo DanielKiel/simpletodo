@@ -21,7 +21,7 @@ class Lists extends Model
      * @var array
      */
     protected $fillable = [
-        'token', 'title', 'description', 'created', 'updated', 'version', 'weight', 'type', 'data', 'tenants_id'
+        'token', 'title', 'description', 'version', 'weight', 'type', 'data', 'tenants_id', 'created', 'updated'
     ];
 
     /**
@@ -44,7 +44,7 @@ class Lists extends Model
     ];
 
     protected $with = [
-        'comments', 'history'
+        'comments', 'history', 'files'
     ];
 
     public static function boot()
@@ -67,6 +67,11 @@ class Lists extends Model
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class, 'lists_id');
+    }
+
+    public function files(): HasMany
+    {
+        return $this->hasMany(ListFile::class, 'lists_id');
     }
 
     /**

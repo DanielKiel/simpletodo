@@ -2,15 +2,19 @@
 
 namespace App;
 
-use App\Scopes\OrderByVersion;
+use App\Scopes\Accessable;
+use App\Scopes\OrderByWeight;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ListsHistory extends Model
+class ListFile extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'lists_history';
+    protected $table = 'list_files';
 
     /**
      * The attributes that are mass assignable.
@@ -18,7 +22,7 @@ class ListsHistory extends Model
      * @var array
      */
     protected $fillable = [
-        'token', 'title', 'description', 'lists_id', 'version', 'weight', 'type', 'data', 'tenants_id', 'created', 'updated'
+        'lists_id', 'by', 'path', 'data', 'version'
     ];
 
     /**
@@ -40,14 +44,8 @@ class ListsHistory extends Model
         'data' => 'object'
     ];
 
-    protected $with = [
-        //'created', 'updated'
-    ];
-
-    public static function boot()
+    public function listObject(): BelongsTo
     {
-        parent::boot();
-
-        static::addGlobalScope(new OrderByVersion());
+        return $this->belongsTo(Lists::class, 'lists_id');
     }
 }

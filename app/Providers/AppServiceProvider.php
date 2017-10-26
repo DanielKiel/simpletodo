@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Comment;
+use App\ListFile;
 use App\Lists;
 use App\Observers\CommentsObserver;
+use App\Observers\ListFilesObserver;
 use App\Observers\ListsObserver;
 use Illuminate\Support\ServiceProvider;
 
@@ -19,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Lists::observe(ListsObserver::class);
         Comment::observe(CommentsObserver::class);
+        ListFile::observe(ListFilesObserver::class);
     }
 
     /**
