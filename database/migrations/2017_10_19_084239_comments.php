@@ -15,9 +15,10 @@ class Comments extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->increments('id')->unsigned();
+            $table->bigIncrements('id')->unsigned();
             $table->bigInteger('lists_id')->unsigned();
             $table->integer('by')->unsigned();
+            $table->bigInteger('reply_to')->unsigned()->nullable();
             $table->integer('version');
             $table->text('content');
             $table->json('position');
@@ -31,6 +32,7 @@ class Comments extends Migration
         try {
             Schema::table('comments', function(Blueprint $table) {
                 $table->foreign('lists_id')->references('id')->on('lists');
+                $table->foreign('reply_to')->references('id')->on('comments');
                 $table->foreign('by')->references('id')->on('users');
             });
         }
@@ -49,6 +51,7 @@ class Comments extends Migration
         try {
             Schema::table('comments', function(Blueprint $table) {
                 $table->dropForeign('comments_lists_id_foreign');
+                $table->dropForeign('comments_reply_to_foreign');
                 $table->dropForeign('comments_by_foreign');
             });
         }

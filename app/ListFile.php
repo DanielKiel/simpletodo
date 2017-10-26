@@ -22,7 +22,7 @@ class ListFile extends Model
      * @var array
      */
     protected $fillable = [
-        'lists_id', 'by', 'path', 'data', 'version'
+        'lists_id', 'by', 'path', 'data', 'version', 'published'
     ];
 
     /**
@@ -41,7 +41,8 @@ class ListFile extends Model
     ];
 
     protected $casts = [
-        'data' => 'object'
+        'data' => 'object',
+        'published' => 'boolean'
     ];
 
     public function listObject(): BelongsTo

@@ -66,7 +66,7 @@ class Lists extends Model
 
     public function comments(): HasMany
     {
-        return $this->hasMany(Comment::class, 'lists_id');
+        return $this->hasMany(Comment::class, 'lists_id')->root();
     }
 
     public function files(): HasMany

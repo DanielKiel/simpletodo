@@ -59,6 +59,65 @@ class BasicCommentsTest extends TestCase
         $this->assertEquals($list1->title, $comment->fresh()->relatedList->title);
     }
 
+    public function testReply()
+    {
+        $list1 = Lists::create([
+            'title' => 'myTitle1',
+            'weight' => 1,
+            'token' => 'myGroup'
+        ]);
+
+        $list2 = Lists::create([
+            'title' => 'myTitle2',
+            'weight' => 0,
+            'token' => 'myGroup'
+        ]);
+
+        $comment  = Comment::create([
+            'content' => 'Ich bin der Kommentar',
+            'position' => [
+                'title' => '1'
+            ],
+            'lists_id' => $list1->id,
+            'version' => $list1->version
+        ]);
+
+        $this->assertDatabaseHas('comments',[
+            'content' => 'Ich bin der Kommentar',
+            'lists_id' => $list1->id,
+            'by' => $this->admin->id
+        ]);
+
+        $this->assertEquals(1, $list1->fresh()->comments()->count());
+        $this->assertEquals(1, $this->admin->fresh()->comments()->count());
+
+        $this->assertEquals($this->admin->name, $comment->fresh()->byUser->name);
+        $this->assertEquals($list1->title, $comment->fresh()->relatedList->title);
+
+        $reply  = Comment::create([
+            'content' => 'Ich bin der Kommentar',
+            'position' => [
+                'title' => '1'
+            ],
+            'lists_id' => $list1->id,
+            'version' => $list1->version,
+            'reply_to' => $comment->id
+        ]);
+
+        $comment = $comment->fresh();
+
+        $this->assertEquals(1, $comment->replies()->count());
+
+        $this->assertEquals($comment->id, $comment->replies->first()->reply_to);
+        $this->assertEquals($reply->id, $comment->replies->first()->id);
+
+        $list1 = $list1->fresh();
+
+        //we are only loading "root comments", so size msut be one
+        $this->assertEquals(1, $list1->comments()->count());
+        $this->assertEquals($reply->id, $list1->comments->first()->replies->first()->id);
+    }
+
     public function setupUserScenario()
     {
         $tenant = Tenant::create(['name' => 'Demo']);

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\File;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\ListFileValidation;
 
 class ListFilesController extends Controller
 {
@@ -35,10 +36,10 @@ class ListFilesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  ListFileValidation $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ListFileValidation $request)
     {
         $this->authorize('create', ListFile::class);
 
@@ -118,13 +119,17 @@ class ListFilesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  ListFileValidation  $request
      * @param  \App\ListFile  $listFile
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ListFile $listFile)
+    public function update(ListFileValidation $request, ListFile $listFile)
     {
         $this->authorize('update', $listFile);
+
+        $listFile->update($request->input());
+
+        return $listFile->fresh();
     }
 
     /**

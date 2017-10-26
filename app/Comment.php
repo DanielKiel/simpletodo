@@ -5,6 +5,7 @@ namespace App;
 use App\Scopes\OrderByVersion;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Comment extends Model
@@ -19,7 +20,7 @@ class Comment extends Model
      * @var array
      */
     protected $fillable = [
-        'lists_id', 'version', 'position', 'content'
+        'lists_id', 'version', 'position', 'content', 'reply_to'
     ];
 
     /**
@@ -42,7 +43,7 @@ class Comment extends Model
     ];
 
     protected $with = [
-        'byUser'
+        'byUser', 'replies'
     ];
 
     public static function boot()
@@ -50,6 +51,11 @@ class Comment extends Model
         parent::boot();
 
         static::addGlobalScope(new OrderByVersion());
+    }
+
+    public function scopeRoot(\Illuminate\Database\Eloquent\Builder $query)
+    {
+        return $query->whereNull('reply_to');
     }
 
     public function byUser(): BelongsTo
@@ -60,5 +66,10 @@ class Comment extends Model
     public function relatedList(): BelongsTo
     {
         return $this->belongsTo(Lists::class, 'lists_id');
+    }
+
+    public function replies(): HasMany
+    {
+        return $this->hasMany(Comment::class, 'reply_to');
     }
 }

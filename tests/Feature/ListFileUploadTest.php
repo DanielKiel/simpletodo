@@ -28,6 +28,13 @@ class ListFileUploadTest extends TestCase
 
         Storage::fake('local');
 
+        //we will have validation error here
+        $response = $this->json('POST', '/api/list-files', [
+            'files' => UploadedFile::fake()->image('avatar.jpg'),
+        ]);
+
+        $this->assertEquals(422, $response->getStatusCode());
+
         $response = $this->json('POST', '/api/list-files', [
             'files' => UploadedFile::fake()->image('avatar.jpg'),
             'lists_id' => $list->id,
@@ -43,5 +50,15 @@ class ListFileUploadTest extends TestCase
 
         // Assert a file does not exist...
         Storage::disk('local')->assertMissing('missing.jpg');
+
+        $response = $this->json('PUT', '/api/list-files/' . $uploaded->id, [
+            'published' => 0
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $content = json_decode($response->getContent());
+
+        $this->assertFalse($content->published);
     }
 }
