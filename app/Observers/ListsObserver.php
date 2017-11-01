@@ -48,7 +48,7 @@ class ListsObserver
             return;
         }
 
-        event(new ListsCreated($list));
+        broadcast(new ListsCreated($list))->toOthers();
 
         Notification::send($users, new ListUpdated($list));
     }
@@ -81,7 +81,7 @@ class ListsObserver
             return;
         }
 
-        event(new ListsUpdated($list));
+        broadcast(new ListsUpdated($list))->toOthers();
 
         Notification::send($users, new ListUpdated($list));
     }

@@ -71,7 +71,6 @@
                     if (this.data.data.length < this.data.per_page) {
                         this.data.data.push(e.lists)
                         this.$forceUpdate()
-                        console.log('pushed')
                     }
 
                     this.data.total = this.data.total + 1

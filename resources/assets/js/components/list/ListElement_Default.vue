@@ -76,7 +76,7 @@
                             <div class="md-body-1">{{comment.content}}</div>
 
                             <md-subheader>Antworten</md-subheader>
-                            <div v-for="reply in comment.replies" class="row col-md-offset-1">
+                            <div v-for="reply in comment.replies" :class="getReplyClass(reply)">
                                 <div class="md-caption">von {{reply.by_user.name}} am {{reply.created_at}}</div>
                                 <div class="md-body-1">{{reply.content}}</div>
                                 <hr/>
@@ -188,12 +188,17 @@
 
             Echo.private(`comments.${this.el.id}`)
                 .listen('CommentCreated', (e) => {
-                    if (e.reply_to === undefined || e.reply_to === null || e.reply_to === '') {
-                        this.allComments.push(e)
+                    let comment = e.comment
+
+                    comment['__new'] = true
+
+                    if (comment.reply_to === undefined || comment.reply_to === null || comment.reply_to === '') {
+                        this.allComments.push(comment)
                     }
                     else {
-                        this.replies[e.reply_to] = e;
+                        this.replies[comment.reply_to] = comment;
                     }
+
                     this.recalculateComments()
                 })
         },
@@ -268,6 +273,16 @@
                 this.$set(this.commentObj, 'reply_to', commentId)
 
                 this.openDialog('commentDialog')
+            },
+
+            getReplyClass(reply) {
+                let cssClass = 'row col-md-offset-1'
+
+                if (reply['__new'] === true) {
+                    cssClass = cssClass + ' new'
+                }
+
+                return cssClass
             },
 
             getHighlighted() {
@@ -366,6 +381,10 @@
 }
 
 .updated {
+    border: 2px solid red;
+}
+
+.new {
     border: 2px solid red;
 }
 

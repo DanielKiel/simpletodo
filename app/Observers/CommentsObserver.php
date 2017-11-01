@@ -33,6 +33,6 @@ class CommentsObserver
 
         Notification::send($users, new CommentCreated($comment));
 
-        event(new CommentCreatedEvent($comment));
+        broadcast(new CommentCreatedEvent($comment))->toOthers();
     }
 }

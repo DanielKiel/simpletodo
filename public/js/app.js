@@ -47326,7 +47326,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -47406,7 +47406,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             if (_this.data.data.length < _this.data.per_page) {
                 _this.data.data.push(e.lists);
                 _this.$forceUpdate();
-                console.log('pushed');
             }
 
             _this.data.total = _this.data.total + 1;
@@ -48378,7 +48377,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n.commented {\n    background: yellow;\n}\n.marked-text {\n    font-weight: bold;\n    color: #000;\n}\n.updated {\n    border: 2px solid red;\n}\n\n", ""]);
+exports.push([module.i, "\n.commented {\n    background: yellow;\n}\n.marked-text {\n    font-weight: bold;\n    color: #000;\n}\n.updated {\n    border: 2px solid red;\n}\n.new {\n    border: 2px solid red;\n}\n\n", ""]);
 
 // exports
 
@@ -48577,11 +48576,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         });
 
         Echo.private('comments.' + this.el.id).listen('CommentCreated', function (e) {
-            if (e.reply_to === undefined || e.reply_to === null || e.reply_to === '') {
-                _this2.allComments.push(e);
+            var comment = e.comment;
+
+            comment['__new'] = true;
+
+            if (comment.reply_to === undefined || comment.reply_to === null || comment.reply_to === '') {
+                _this2.allComments.push(comment);
             } else {
-                _this2.replies[e.reply_to] = e;
+                _this2.replies[comment.reply_to] = comment;
             }
+
             _this2.recalculateComments();
         });
     },
@@ -48654,6 +48658,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.$set(this.commentObj, 'reply_to', commentId);
 
             this.openDialog('commentDialog');
+        },
+        getReplyClass: function getReplyClass(reply) {
+            var cssClass = 'row col-md-offset-1';
+
+            if (reply['__new'] === true) {
+                cssClass = cssClass + ' new';
+            }
+
+            return cssClass;
         },
         getHighlighted: function getHighlighted() {
             var selection = document.getSelection();
@@ -49039,7 +49052,7 @@ var render = function() {
                                   _vm._l(comment.replies, function(reply) {
                                     return _c(
                                       "div",
-                                      { staticClass: "row col-md-offset-1" },
+                                      { class: _vm.getReplyClass(reply) },
                                       [
                                         _c(
                                           "div",
