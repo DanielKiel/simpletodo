@@ -41,9 +41,8 @@ class ListFileUploadTest extends TestCase
             'version' => 1
         ]);
 
-        $content = collect(json_decode($response->getContent()));
 
-        $uploaded = $content->first();
+        $uploaded = json_decode($response->getContent());
 
         // Assert the file was stored...
         Storage::disk('local')->assertExists($uploaded->path);

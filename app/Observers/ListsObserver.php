@@ -9,6 +9,8 @@
 namespace App\Observers;
 
 
+use App\Events\ListsCreated;
+use App\Events\ListsUpdated;
 use App\Lists;
 use App\ListsHistory;
 use App\Notifications\ListUpdated;
@@ -38,6 +40,19 @@ class ListsObserver
         }
     }
 
+    public function created(Lists $list)
+    {
+        $users = SharedList::getFollowers($list->token);
+
+        if ($users->isEmpty()) {
+            return;
+        }
+
+        event(new ListsCreated($list));
+
+        Notification::send($users, new ListUpdated($list));
+    }
+
     public function updating(Lists $list)
     {
         $list->updated = Auth::id();
@@ -65,6 +80,8 @@ class ListsObserver
         if ($users->isEmpty()) {
             return;
         }
+
+        event(new ListsUpdated($list));
 
         Notification::send($users, new ListUpdated($list));
     }

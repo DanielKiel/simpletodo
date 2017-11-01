@@ -7,7 +7,7 @@
                         <h1 class="md-title">Liste: {{token}}</h1>
 
                         <md-button class="md-icon-button md-fab md-mini" @click="openDialog('elDialog')">
-                          <md-icon>control_point</md-icon>
+                          <md-icon>add</md-icon>
                         </md-button>
                     </md-toolbar>
                     <md-list>
@@ -62,6 +62,20 @@
 
         created() {
             this.fetchData()
+        },
+
+        mounted() {
+            Echo.private(`lists.${this.token}`)
+                .listen('ListsCreated', (e) => {
+
+                    if (this.data.data.length < this.data.per_page) {
+                        this.data.data.push(e.lists)
+                        this.$forceUpdate()
+                        console.log('pushed')
+                    }
+
+                    this.data.total = this.data.total + 1
+                })
         },
 
         methods: {

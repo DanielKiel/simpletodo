@@ -23,4 +23,8 @@ Route::middleware(['api','auth:api'])->resource('list-files', 'API\ListFilesCont
 
 Route::middleware(['api','auth:api'])->resource('comments', 'API\CommentsController');
 
+Route::middleware(['api','auth:api'])->resource('tenants', 'API\TenantsController');
+
+Route::middleware(['api','auth:api'])->resource('users', 'API\UsersController');
+
 Route::middleware(['api','auth:api'])->get('/tokens', 'API\ListsController@tokens')->name('api.tokens');

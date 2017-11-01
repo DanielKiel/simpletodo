@@ -12,6 +12,14 @@ class Demo extends Seeder
     public function run()
     {
         \Illuminate\Support\Facades\App::booted(function($app) {
+            //create a second user here
+            $secondUser = \App\User::create([
+                'name' => 'DemoUser',
+                'email' => 'seconduser@seconduser.de',
+                'tenants_id' => \App\Tenant::first()->id,
+                'password' => bcrypt('demo')
+            ]);
+
             $user = \App\User::first();
 
             $app['auth']->guard(null)->setUser($user);
@@ -72,6 +80,8 @@ So gibt es Regeln für HTML, CSS, JavaScript oder auch XML; Worte, die Sie viell
                 'version' => 2,
                 'content' => 'Weit hinten, hinter den Wortbergen, fern der Länder Vokalien und Konsonantien leben die Blindtexte. Abgeschieden wohnen sie in Buchstabhausen an der Küste des Semantik, eines großen Sprachozeans. Ein kleines Bächlein namens Duden fließt durch ihren Ort und versorgt sie mit den nötigen Regelialien. Es ist ein paradiesmatisches Land, in dem'
             ]);
+
+            \App\SharedList::share('myGroup',$secondUser->id);
         });
 
 

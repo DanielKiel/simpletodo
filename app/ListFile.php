@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class ListFile extends Model
 {
@@ -48,5 +50,15 @@ class ListFile extends Model
     public function listObject(): BelongsTo
     {
         return $this->belongsTo(Lists::class, 'lists_id');
+    }
+
+    public function toArray()
+    {
+        $array = parent::toArray();
+
+        array_set($array, 'source', base64_encode(Image::make(Storage::get($this->path))
+            ->widen(180)->stream()));
+
+        return $array;
     }
 }

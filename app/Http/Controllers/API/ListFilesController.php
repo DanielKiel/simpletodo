@@ -5,9 +5,11 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\ListFile;
 use App\Lists;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Http\File;
-use Illuminate\Http\UploadedFile;
+use Intervention\Image\Facades\Image;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\ListFileValidation;
 
@@ -18,9 +20,13 @@ class ListFilesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $files = [];
 
+        $listId = $request->get('listId');
+
+        return ListFile::where('lists_id', $listId)->get()->toArray();
     }
 
     /**
@@ -43,55 +49,31 @@ class ListFilesController extends Controller
     {
         $this->authorize('create', ListFile::class);
 
-        $files = $request->files;
-
         //needed list to get token to take this as directory
         $list = Lists::findOrFail($request->input('lists_id'));
 
-        if (empty($files)) {
-            return response('no files uploaded', 422)->json(['errors' => [
-                'files' => [
-                    'no files uploaded'
-                ]
-            ]]);
+        $file = $request->file('upload');
+
+        $path =  Storage::putFile( 'local', $file);
+
+        if ($file instanceof UploadedFile) {
+            $name = $file->getClientOriginalName();
+        }
+        else {
+            $name = $file->name;
         }
 
-        $uploaded = [];
-
-        foreach ($files as $file) {
-            $path =  Storage::putFile('list_files', $file);
-            $data = [];
-
-            if ($file instanceof UploadedFile) {
-                $name = $file->getClientOriginalName();
-            }
-            else {
-               $name = $file->name;
-            }
-
-            $data = [
-                'originalName' => $name
-            ];
-
-            array_push($uploaded,[
-                'path' => $path,
-                'data' => $data
-            ]);
-        }
+        $data = [
+            'originalName' => $name
+        ];
 
         $input = $request->all();
         array_forget($input, 'files');
 
-        $results = collect();
+        array_set($input, 'path', $path);
+        array_set($input, 'data', $data);
 
-        foreach ($uploaded as $upload) {
-            array_set($input, 'path', array_get($upload, 'path'));
-            array_set($input, 'data', array_get($upload, 'data', []));
-
-            $results->push(ListFile::create($input));
-        }
-
-        return $results;
+        return ListFile::create($input)->fresh();
     }
 
     /**
@@ -100,9 +82,17 @@ class ListFilesController extends Controller
      * @param  \App\ListFile  $listFile
      * @return \Illuminate\Http\Response
      */
-    public function show(ListFile $listFile)
+    public function show(ListFile $listFile, $thumb = 1)
     {
-        //
+        if ( (bool) $thumb === false ) {
+            return base64_encode(Storage::get($listFile->path));
+        }
+        else {
+             return base64_encode(Image::make(Storage::get($listFile->path))
+                ->widen(180)->stream());
+
+        }
+
     }
 
     /**

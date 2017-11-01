@@ -44,7 +44,7 @@ class Lists extends Model
     ];
 
     protected $with = [
-        'comments', 'history', 'files'
+        'comments', 'history'
     ];
 
     public static function boot()

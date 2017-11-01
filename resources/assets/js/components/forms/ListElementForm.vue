@@ -1,7 +1,7 @@
 <template>
     <div>
         <form :method="method" :action="action">
-            <md-input-container v-if="el.token === '' || el.token === undefined ">
+            <md-input-container v-if="el.token === '' || el.token === undefined || el.token === null">
                 <label>Name der Liste</label>
                 <md-input v-model="el.token" required></md-input>
             </md-input-container>

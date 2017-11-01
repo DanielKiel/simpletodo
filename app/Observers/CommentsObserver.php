@@ -11,6 +11,7 @@ namespace App\Observers;
 
 use App\Comment;
 use App\Notifications\CommentCreated;
+use App\Events\CommentCreated as CommentCreatedEvent;
 use App\SharedList;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
@@ -31,5 +32,7 @@ class CommentsObserver
         }
 
         Notification::send($users, new CommentCreated($comment));
+
+        event(new CommentCreatedEvent($comment));
     }
 }
