@@ -18,7 +18,7 @@
             </md-card-header>
             <md-card-content>
                 <grid :toolbar="[{'href':'/backend/list', 'title':'create', 'icon':'add', 'class': 'md-raised md-primary md-icon-button md-fab md-mini', 'ajax':false}]"
-                      :header="[{'name':'id','title':'#'},{'name':'token','title':'Template Name'}]"
+                      :header="[{'name':'token','title':'Liste'}]"
                       api="{{ $tokensRoute }}"
                       links="{{ $links }}"></grid>
             </md-card-content>

@@ -31,3 +31,17 @@ Broadcast::channel('comments.{relatedListsId}', function ($user, $relatedListsId
     //@TODO implement some logic here later
 
 });
+
+Broadcast::channel('listFiles.{listsId}', function ($user, $listsId) {
+
+    return true;
+    //@TODO implement some logic here later
+
+});
+
+Broadcast::channel('listFileUpdated.{listsId}', function ($user, $listsId) {
+
+    return true;
+    //@TODO implement some logic here later
+
+});

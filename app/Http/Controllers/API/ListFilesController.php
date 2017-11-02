@@ -22,8 +22,6 @@ class ListFilesController extends Controller
      */
     public function index(Request $request)
     {
-        $files = [];
-
         $listId = $request->get('listId');
 
         return ListFile::where('lists_id', $listId)->get()->toArray();
@@ -85,11 +83,10 @@ class ListFilesController extends Controller
     public function show(ListFile $listFile, $thumb = 1)
     {
         if ( (bool) $thumb === false ) {
-            return base64_encode(Storage::get($listFile->path));
+            return $listFile->getRaw();
         }
         else {
-             return base64_encode(Image::make(Storage::get($listFile->path))
-                ->widen(180)->stream());
+             return $listFile->getThumb();
 
         }
 

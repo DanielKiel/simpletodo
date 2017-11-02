@@ -2,7 +2,7 @@
     <div class="row row-eq-height">
         <md-card v-for="file in existingFiles" :key="file.id" class="col-md-3 margin-bottom">
 
-            <md-card-media md-ratio="16:9" md-medium class="thumb">
+            <md-card-media md-ratio="16:9" md-medium :class="{ updated: file.__updated }">
                 <img :src="'data:image/png;base64,' + file.source" alt="">
             </md-card-media>
 
@@ -45,18 +45,46 @@
         },
 
         created() {
-
-            axios({
-                method: 'GET',
-                url: '/api/list-files/?listId=' + this.el.id
-            }).then( response => {
-                this.existingFiles = response.data
-            } ).catch( err => {
-                console.log(err)
-            } )
-
+            this.fetchFiles()
         },
+
+        mounted() {
+            Echo.private(`listFiles.${this.el.id}`)
+                .listen('FileUploaded', (e) => {
+                    this.fetchFiles()
+                })
+
+            Echo.private(`listFileUpdated.${this.el.id}`)
+                .listen('FileUpdated', (e) => {
+                    let file = e.listFile
+                    file['__updated'] = true
+
+
+                    this.existingFiles.forEach( (existingFile, index) => {
+                        if (file.id === existingFile.id) {
+                            this.$set(this.existingFiles, index, file)
+                            console.log('updated')
+
+                            return
+                        }
+                    })
+
+                })
+        },
+
         methods: {
+            fetchFiles() {
+                axios({
+                    method: 'GET',
+                    url: '/api/list-files/?listId=' + this.el.id
+                }).then( response => {
+                    this.existingFiles = response.data
+
+                } ).catch( err => {
+                    console.log(err)
+                } )
+            },
+
             changeState(file) {
                 axios({
                     method: 'PUT',
@@ -65,11 +93,12 @@
                         published: ! file.published
                     }
                 }).then( response => {
-                    console.log(response)
+
                 } ).catch(err => {
                     console.log(err)
                 })
             },
+
             save() {
                 this.formData.set('lists_id', this.el.id)
                 this.formData.set('version', this.el.version)

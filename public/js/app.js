@@ -63829,19 +63829,44 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         };
     },
     created: function created() {
+        this.fetchFiles();
+    },
+    mounted: function mounted() {
         var _this = this;
 
-        axios({
-            method: 'GET',
-            url: '/api/list-files/?listId=' + this.el.id
-        }).then(function (response) {
-            _this.existingFiles = response.data;
-        }).catch(function (err) {
-            console.log(err);
+        Echo.private('listFiles.' + this.el.id).listen('FileUploaded', function (e) {
+            _this.fetchFiles();
+        });
+
+        Echo.private('listFileUpdated.' + this.el.id).listen('FileUpdated', function (e) {
+            var file = e.listFile;
+            file['__updated'] = true;
+
+            _this.existingFiles.forEach(function (existingFile, index) {
+                if (file.id === existingFile.id) {
+                    _this.$set(_this.existingFiles, index, file);
+                    console.log('updated');
+
+                    return;
+                }
+            });
         });
     },
 
+
     methods: {
+        fetchFiles: function fetchFiles() {
+            var _this2 = this;
+
+            axios({
+                method: 'GET',
+                url: '/api/list-files/?listId=' + this.el.id
+            }).then(function (response) {
+                _this2.existingFiles = response.data;
+            }).catch(function (err) {
+                console.log(err);
+            });
+        },
         changeState: function changeState(file) {
             axios({
                 method: 'PUT',
@@ -63849,14 +63874,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 data: {
                     published: !file.published
                 }
-            }).then(function (response) {
-                console.log(response);
-            }).catch(function (err) {
+            }).then(function (response) {}).catch(function (err) {
                 console.log(err);
             });
         },
         save: function save() {
-            var _this2 = this;
+            var _this3 = this;
 
             this.formData.set('lists_id', this.el.id);
             this.formData.set('version', this.el.version);
@@ -63867,22 +63890,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 data: this.formData
             }).then(function (response) {
                 var data = response.data;
-                _this2.$set(_this2.progress, data.data.originalName, 100);
+                _this3.$set(_this3.progress, data.data.originalName, 100);
 
-                _this2.files.forEach(function (file, index) {
+                _this3.files.forEach(function (file, index) {
                     if (file.name === data.data.originalName) {
-                        _this2.$delete(_this2.files, index);
+                        _this3.$delete(_this3.files, index);
                     }
                 });
 
                 //next request to get source
-                _this2.existingFiles.push(data);
+                _this3.existingFiles.push(data);
             }).catch(function (err) {
                 console.log(err);
             });
         },
         filesChange: function filesChange(fileList) {
-            var _this3 = this;
+            var _this4 = this;
 
             this.files = [];
 
@@ -63891,12 +63914,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             // append the files to FormData
             Array.from(Array(fileList.length).keys()).map(function (x) {
-                _this3.files.push(fileList[x]);
-                _this3.formData = new FormData();
-                _this3.progress[fileList[x].name] = 10;
-                _this3.formData.append('upload', fileList[x], fileList[x].name);
+                _this4.files.push(fileList[x]);
+                _this4.formData = new FormData();
+                _this4.progress[fileList[x].name] = 10;
+                _this4.formData.append('upload', fileList[x], fileList[x].name);
                 // save it
-                _this3.save();
+                _this4.save();
             });
         },
         getFilePath: function getFilePath(fileId) {
@@ -63930,7 +63953,7 @@ var render = function() {
             _c(
               "md-card-media",
               {
-                staticClass: "thumb",
+                class: { updated: file.__updated },
                 attrs: { "md-ratio": "16:9", "md-medium": "" }
               },
               [

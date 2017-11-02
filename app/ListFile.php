@@ -56,9 +56,19 @@ class ListFile extends Model
     {
         $array = parent::toArray();
 
-        array_set($array, 'source', base64_encode(Image::make(Storage::get($this->path))
-            ->widen(180)->stream()));
+        array_set($array, 'source', $this->getThumb());
 
         return $array;
+    }
+
+    public function getRaw()
+    {
+        return base64_encode(Storage::get($this->path));
+    }
+
+    public function getThumb()
+    {
+        return base64_encode(Image::make(Storage::get($this->path))
+            ->widen(180)->stream());
     }
 }

@@ -22,6 +22,3 @@ later:
 - make it featurable (a tenant can have enabled a feature like: calendar where the list can be placed with i calendar, stateable where the list entries can have states like planned, opened, etc)
 
 
-### DEV
-appId: acb9b675e0108eef
-key: 8fa1945f4b83db59b0e86f7a5ae3aec6
