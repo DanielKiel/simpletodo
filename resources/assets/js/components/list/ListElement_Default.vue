@@ -66,7 +66,7 @@
 
                         </md-card>
 
-                        <md-card class="md-flex-100" md-theme="comment_card" v-for="comment in comments">
+                        <md-card :class="{new: comment.__new}" md-theme="comment_card" v-for="comment in comments">
                           <md-card-header>
                             <div class="md-title">{{comment.by_user.name}}</div>
                             <div class="md-subhead">Am: {{comment.created_at}} (Für Version {{comment.version}})</div>
@@ -228,6 +228,8 @@
             },
 
             onCommentCreated(data) {
+                data['__new'] = true
+
                 if (data.reply_to === undefined || data.reply_to === null || data.reply_to === '') {
                     this.allComments.push(data)
                 }

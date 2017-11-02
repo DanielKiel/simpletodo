@@ -62797,6 +62797,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.data = data;
         },
         onCommentCreated: function onCommentCreated(data) {
+            data['__new'] = true;
+
             if (data.reply_to === undefined || data.reply_to === null || data.reply_to === '') {
                 this.allComments.push(data);
             } else {
@@ -63200,7 +63202,7 @@ var render = function() {
                           return _c(
                             "md-card",
                             {
-                              staticClass: "md-flex-100",
+                              class: { new: comment.__new },
                               attrs: { "md-theme": "comment_card" }
                             },
                             [
