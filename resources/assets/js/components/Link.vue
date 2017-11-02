@@ -1,6 +1,6 @@
 <template>
 
-    <md-button :href="href" :class="vclass" :title="title" :target="getTarget()" v-on:click='onClick'>
+    <md-button md-theme="button" :href="href" :class="vclass" :title="title" :target="getTarget()" v-on:click='onClick'>
         <md-icon>{{icon}}</md-icon>
     </md-button>
 

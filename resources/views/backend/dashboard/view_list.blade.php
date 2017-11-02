@@ -8,7 +8,7 @@
                 <md-card-content>
                     <list-form method="POST" action="{{route('lists.store')}}" :el="{{new \App\Lists([
                             'title' => null, 'token'=> null, 'description'=> null
-                        ])}}"></list-form>
+                        ])}}" ></list-form>
                 </md-card-content>
             </md-card>
         </md-layout>

@@ -23,6 +23,11 @@ Vue.material.registerTheme({
         warn: 'red',
         background: 'white'
     },
+    button: {
+        primary: 'lime',
+        warning: 'red',
+        accent: 'teal'
+    },
     nav: {
         primary: 'white'
     },
@@ -30,6 +35,12 @@ Vue.material.registerTheme({
         background: 'white'
     }
 });
+
+let VueQuillEditor = require('vue-quill-editor');
+
+
+// mount with global
+Vue.use(VueQuillEditor);
 
 
 

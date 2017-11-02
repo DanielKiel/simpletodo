@@ -19,16 +19,16 @@
                     <div class="col-md-1">
                         <md-list class="md-dense">
                             <md-list-item>
-                                <md-button class="md-icon-button md-list-action" @click="show = 'description'" :disabled="show === 'description'"> <md-icon>description</md-icon> </md-button>
+                                <md-button md-theme="button" class="md-raised md-primary md-icon-button md-list-action" @click="show = 'description'" :disabled="show === 'description'"> <md-icon>description</md-icon> </md-button>
                             </md-list-item>
                             <md-list-item>
-                                <md-button class="md-icon-button md-list-action" @click="openDialog('commentDialog')" :disabled="show === 'comments'"> <md-icon>insert_comment</md-icon> </md-button>
+                                <md-button md-theme="button" class="md-raised md-primary md-icon-button md-list-action" @click="openDialog('commentDialog')" :disabled="show === 'comments'"> <md-icon>insert_comment</md-icon> </md-button>
                             </md-list-item>
                             <md-list-item>
-                                <md-button class="md-icon-button md-list-action" @click="show = 'history'" :disabled="show === 'history'"> <md-icon>history</md-icon> </md-button>
+                                <md-button md-theme="button" class="md-raised md-primary md-icon-button md-list-action" @click="show = 'history'" :disabled="show === 'history'"> <md-icon>history</md-icon> </md-button>
                             </md-list-item>
                             <md-list-item>
-                                <md-button class="md-icon-button md-list-action" @click="show = 'edit'" :disabled="show === 'edit'"> <md-icon>mode_edit</md-icon> </md-button>
+                                <md-button md-theme="button" class="md-raised md-primary md-icon-button md-list-action" @click="show = 'edit'" :disabled="show === 'edit'"> <md-icon>mode_edit</md-icon> </md-button>
                             </md-list-item>
                         </md-list>
 
@@ -85,7 +85,7 @@
                           </md-card-content>
 
                           <md-card-actions>
-                              <md-button @click="reply(comment.id)"> <md-icon>reply</md-icon> </md-button>
+                              <md-button md-theme="button" class="md-icon-button md-raised md-primary" @click="reply(comment.id)"> <md-icon>reply</md-icon> </md-button>
                           </md-card-actions>
                           <md-card-actions v-if="hasCommentFooter(comment) === true">
                             <md-button  @click="getCommentedMark(comment)"><md-icon>search</md-icon></md-button>
@@ -106,7 +106,7 @@
                   </md-dialog-content>
 
                   <md-dialog-actions>
-                    <md-button class="md-primary" @click="closeDialog('commentDialog')">X</md-button>
+                    <md-button md-theme="button" class="md-raised md-warning" @click="closeDialog('commentDialog')">X</md-button>
                   </md-dialog-actions>
                 </md-dialog>
               </md-card-content>

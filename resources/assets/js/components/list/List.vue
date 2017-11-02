@@ -6,7 +6,7 @@
                     <md-toolbar>
                         <h1 class="md-title">Liste: {{token}}</h1>
 
-                        <md-button class="md-icon-button md-fab md-mini" @click="openDialog('elDialog')">
+                        <md-button md-theme="button" class="md-icon-button md-primary md-raised" @click="openDialog('elDialog')">
                           <md-icon>add</md-icon>
                         </md-button>
                     </md-toolbar>

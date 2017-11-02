@@ -26,6 +26,7 @@
         "laravel-echo": "^1.3.2",
         "laravel-echo-server": "^1.3.2",
         "vue-material": "^0.7.5",
-        "vue-mdc": "0.0.10"
+        "vue-mdc": "0.0.10",
+        "vue-quill-editor": "^2.3.3"
     }
 }
