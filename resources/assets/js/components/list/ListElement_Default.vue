@@ -153,15 +153,6 @@
         watch: {
             show: function(newVal, oldVal) {
                this.recalculateComments()
-            },
-
-            updated: function(newVal, oldVal) {
-                if (newVal === true) {
-                    setTimeout(
-                        function() {
-                            this.updated = false
-                        }, 5000)
-                }
             }
         },
 
@@ -380,12 +371,33 @@
     color: #000;
 }
 
-.updated {
-    border: 2px solid red;
+@-webkit-keyframes blink {
+    from, to {
+        border-color: green
+    }
+    50% {
+        border-color: transparent
+    }
+}
+@keyframes blink {
+    from, to {
+        border-color: green
+    }
+    50% {
+        border-color: transparent
+    }
 }
 
-.new {
-    border: 2px solid red;
+.new, .updated{
+    border:1px solid transparent;
+
+    animation-name: blink;
+    animation-duration: 4s;
+    animation-iteration-count: 3;
+
+    -webkit-animation-name: blink;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-iteration-count: 3;
 }
 
 </style>

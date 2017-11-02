@@ -48377,7 +48377,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n.commented {\n    background: yellow;\n}\n.marked-text {\n    font-weight: bold;\n    color: #000;\n}\n.updated {\n    border: 2px solid red;\n}\n.new {\n    border: 2px solid red;\n}\n\n", ""]);
+exports.push([module.i, "\n.commented {\n    background: yellow;\n}\n.marked-text {\n    font-weight: bold;\n    color: #000;\n}\n@-webkit-keyframes blink {\nfrom, to {\n        border-color: green\n}\n50% {\n        border-color: transparent\n}\n}\n@keyframes blink {\nfrom, to {\n        border-color: green\n}\n50% {\n        border-color: transparent\n}\n}\n.new, .updated{\n    border:1px solid transparent;\n\n    animation-name: blink;\n    -webkit-animation-duration: 4s;\n            animation-duration: 4s;\n    animation-iteration-count: 3;\n\n    -webkit-animation-name: blink;\n    -webkit-animation-duration: 1s;\n    -webkit-animation-iteration-count: 3;\n}\n\n", ""]);
 
 // exports
 
@@ -48543,14 +48543,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     watch: {
         show: function show(newVal, oldVal) {
             this.recalculateComments();
-        },
-
-        updated: function updated(newVal, oldVal) {
-            if (newVal === true) {
-                setTimeout(function () {
-                    this.updated = false;
-                }, 5000);
-            }
         }
     },
 
