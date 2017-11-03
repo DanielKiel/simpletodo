@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserValidation;
+use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
@@ -16,7 +17,10 @@ class UsersController extends Controller
      */
     public function index(Request $request)
     {
-        return User::paginate($request->input('per_page', 15));
+        return User::with('shared')
+            ->byTenant()
+            //->where('id', '!=', Auth::id())
+            ->get();//paginate($request->input('per_page', 15));
     }
 
     /**

@@ -6,6 +6,10 @@
                     <md-toolbar>
                         <h1 class="md-title">Liste: {{token}}</h1>
 
+                        <md-button md-theme="button" class="md-icon-button md-primary md-raised" @click="openDialog('shareDialog')">
+                          <md-icon>visibility</md-icon>
+                        </md-button>
+
                         <md-button md-theme="button" class="md-icon-button md-primary md-raised" @click="openDialog('elDialog')">
                           <md-icon>add</md-icon>
                         </md-button>
@@ -34,6 +38,16 @@
 
           <md-dialog-actions>
             <md-button class="md-primary" @click="closeDialog('elDialog')">X</md-button>
+          </md-dialog-actions>
+        </md-dialog>
+
+        <md-dialog ref="shareDialog">
+          <md-dialog-content>
+            <share :token="token"></share>
+          </md-dialog-content>
+
+          <md-dialog-actions>
+            <md-button class="md-primary" @click="closeDialog('shareDialog')">X</md-button>
           </md-dialog-actions>
         </md-dialog>
     </md-layout>

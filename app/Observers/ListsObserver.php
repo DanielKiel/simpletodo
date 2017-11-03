@@ -44,6 +44,8 @@ class ListsObserver
 
     public function created(Lists $list)
     {
+        SharedList::share($list->token, Auth::id());
+
         $users = SharedList::getFollowers($list->token);
 
         if ($users->isEmpty()) {

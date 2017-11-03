@@ -67,6 +67,7 @@ Vue.component('vdialog', require('./components/Dialog.vue'));
 Vue.component('list-el-default', require('./components/list/ListElement_Default.vue'));
 Vue.component('list-form', require('./components/forms/ListElementForm.vue'));
 Vue.component('list-files', require('./components/list/ListFile.vue'));
+Vue.component('share', require('./components/list/Share.vue'));
 
 Vue.component('comment-form', require('./components/forms/CommentForm.vue'));
 

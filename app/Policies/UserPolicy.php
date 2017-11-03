@@ -19,7 +19,7 @@ class UserPolicy extends SuperAdminPolicy
      */
     public function view(User $user, User $model)
     {
-        return false;
+        return true;
     }
 
     /**
@@ -30,7 +30,7 @@ class UserPolicy extends SuperAdminPolicy
      */
     public function create(User $user)
     {
-        return false;
+        return true;
     }
 
     /**

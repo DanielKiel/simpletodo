@@ -9,6 +9,7 @@
 namespace App\Scopes;
 
 
+use App\User;
 use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -25,6 +26,12 @@ class ByTenant implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
+        $user = Auth::user();
+
+        if (! $user instanceof User) {
+            return $builder;
+        }
+
         $tenantId = Auth::user()->tenants_id;
 
         return $builder->where('tenants_id', $tenantId);
