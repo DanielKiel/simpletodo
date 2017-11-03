@@ -87,4 +87,9 @@ class Lists extends Model
 
         return $query;
     }
+
+    public function getDirectoryName()
+    {
+        return 'list_files/' . snake_case($this->token);
+    }
 }

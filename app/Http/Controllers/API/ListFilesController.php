@@ -52,7 +52,7 @@ class ListFilesController extends Controller
 
         $file = $request->file('upload');
 
-        $path =  Storage::putFile( 'local', $file);
+        $path =  Storage::putFile( $list->getDirectoryName(), $file);
 
         if ($file instanceof UploadedFile) {
             $name = $file->getClientOriginalName();
@@ -66,7 +66,7 @@ class ListFilesController extends Controller
         ];
 
         $input = $request->all();
-        array_forget($input, 'files');
+        array_forget($input, 'upload');
 
         array_set($input, 'path', $path);
         array_set($input, 'data', $data);

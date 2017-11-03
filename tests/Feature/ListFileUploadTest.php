@@ -26,17 +26,17 @@ class ListFileUploadTest extends TestCase
             'title' => 'myTitle'
         ]);
 
-        Storage::fake('local');
+        Storage::fake($list->getDirectoryName());
 
         //we will have validation error here
         $response = $this->json('POST', '/api/list-files', [
-            'files' => UploadedFile::fake()->image('avatar.jpg'),
+            'upload' => UploadedFile::fake()->image('avatar.jpg'),
         ]);
 
         $this->assertEquals(422, $response->getStatusCode());
 
         $response = $this->json('POST', '/api/list-files', [
-            'files' => UploadedFile::fake()->image('avatar.jpg'),
+            'upload' => UploadedFile::fake()->image('avatar.jpg'),
             'lists_id' => $list->id,
             'version' => 1
         ]);
@@ -45,10 +45,10 @@ class ListFileUploadTest extends TestCase
         $uploaded = json_decode($response->getContent());
 
         // Assert the file was stored...
-        Storage::disk('local')->assertExists($uploaded->path);
+        Storage::disk()->assertExists($uploaded->path);
 
         // Assert a file does not exist...
-        Storage::disk('local')->assertMissing('missing.jpg');
+        Storage::disk()->assertMissing('missing.jpg');
 
         $response = $this->json('PUT', '/api/list-files/' . $uploaded->id, [
             'published' => 0
