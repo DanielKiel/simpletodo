@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Scopes\Accessable;
+use App\Scopes\ByTenant;
 use App\Scopes\OrderByWeight;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -54,6 +55,8 @@ class Lists extends Model
         static::addGlobalScope(new OrderByWeight());
 
         static::addGlobalScope(new Accessable());
+
+        static::addGlobalScope(new ByTenant());
     }
 
     /**

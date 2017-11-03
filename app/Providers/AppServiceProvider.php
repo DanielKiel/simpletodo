@@ -8,6 +8,10 @@ use App\Lists;
 use App\Observers\CommentsObserver;
 use App\Observers\ListFilesObserver;
 use App\Observers\ListsObserver;
+use App\Observers\SharedListsObserver;
+use App\Observers\UsersObserver;
+use App\SharedList;
+use App\User;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
         Lists::observe(ListsObserver::class);
         Comment::observe(CommentsObserver::class);
         ListFile::observe(ListFilesObserver::class);
+        SharedList::observe(SharedListsObserver::class);
+        User::observe(UsersObserver::class);
     }
 
     /**

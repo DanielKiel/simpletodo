@@ -28,3 +28,7 @@ Route::middleware(['api','auth:api'])->resource('tenants', 'API\TenantsControlle
 Route::middleware(['api','auth:api'])->resource('users', 'API\UsersController');
 
 Route::middleware(['api','auth:api'])->get('/tokens', 'API\ListsController@tokens')->name('api.tokens');
+
+Route::middleware(['api','auth:api'])->get('/share/{token}/{userId}', 'API\ListsController@share')->name('api.share');
+
+Route::middleware(['api','auth:api'])->get('/unshare/{token}/{userId}', 'API\ListsController@unshare')->name('api.unshare');

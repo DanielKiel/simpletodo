@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Scopes\ByTenant;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -42,6 +43,13 @@ class User extends Authenticatable
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class, 'by');
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new ByTenant());
     }
 
     /**

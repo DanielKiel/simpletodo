@@ -2,10 +2,11 @@
 
 namespace App\Policies;
 
+use App\Core\Policies\SuperAdminPolicy;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class UserPolicy
+class UserPolicy extends SuperAdminPolicy
 {
     use HandlesAuthorization;
 

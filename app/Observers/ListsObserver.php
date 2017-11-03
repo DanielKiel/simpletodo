@@ -22,11 +22,13 @@ class ListsObserver
 {
     public function creating(Lists $list)
     {
-        $list->created = Auth::id();
+        $user = Auth::user();
 
-        $list->updated = Auth::id();
+        $list->created = $user->id;
 
-        $list->tenants_id = Auth::user()->tenants_id;
+        $list->updated = $user->id;
+
+        $list->tenants_id = $user->tenants_id;
 
         if (empty($list->token)) {
             $list->token = uniqid();

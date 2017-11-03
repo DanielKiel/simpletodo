@@ -132,20 +132,17 @@ class SharedListsTest extends TestCase
 
     public function setupUserScenario()
     {
-        $tenant = Tenant::create(['name' => 'Demo']);
 
         $this->user_A = User::create([
             'name' => 'UserA',
             'email' => 'userA@publicare.de',
             'password' => bcrypt('password'),
-            'tenants_id' => $tenant->id,
         ]);
 
         $this->user_B = User::create([
             'name' => 'UserB',
             'email' => 'userB@publicare.de',
             'password' => bcrypt('password'),
-            'tenants_id' => $tenant->id,
         ]);
     }
 }
