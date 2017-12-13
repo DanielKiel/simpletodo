@@ -9,6 +9,8 @@
 namespace App\Observers;
 
 
+use App\Events\ListsCreated;
+use App\Events\ListsUpdated;
 use App\Lists;
 use App\ListsHistory;
 use App\Notifications\ListUpdated;
@@ -20,11 +22,13 @@ class ListsObserver
 {
     public function creating(Lists $list)
     {
-        $list->created = Auth::id();
+        $user = Auth::user();
 
-        $list->updated = Auth::id();
+        $list->created = $user->id;
 
-        $list->tenants_id = Auth::user()->tenants_id;
+        $list->updated = $user->id;
+
+        $list->tenants_id = $user->tenants_id;
 
         if (empty($list->token)) {
             $list->token = uniqid();
@@ -36,6 +40,21 @@ class ListsObserver
         if (empty($list->type)) {
             $list->type = 'default';
         }
+    }
+
+    public function created(Lists $list)
+    {
+        SharedList::share($list->token, Auth::id());
+
+        $users = SharedList::getFollowers($list->token);
+
+        if ($users->isEmpty()) {
+            return;
+        }
+
+        broadcast(new ListsCreated($list))->toOthers();
+
+        Notification::send($users, new ListUpdated($list));
     }
 
     public function updating(Lists $list)
@@ -65,6 +84,8 @@ class ListsObserver
         if ($users->isEmpty()) {
             return;
         }
+
+        broadcast(new ListsUpdated($list))->toOthers();
 
         Notification::send($users, new ListUpdated($list));
     }

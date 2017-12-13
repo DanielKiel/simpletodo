@@ -18,7 +18,7 @@ class ListsHistory extends Model
      * @var array
      */
     protected $fillable = [
-        'token', 'title', 'description', 'created', 'updated', 'lists_id', 'version', 'weight', 'type', 'data', 'tenants_id'
+        'token', 'title', 'description', 'lists_id', 'version', 'weight', 'type', 'data', 'tenants_id', 'created', 'updated'
     ];
 
     /**

@@ -1,5 +1,5 @@
 <template>
-     <md-list-item md-expand-multiple>
+     <md-list-item md-expand-multiple v-bind:class="{ updated: updated }">
         <md-icon>whatshot</md-icon>
         <span>{{data.title}}</span>
 
@@ -15,28 +15,30 @@
 
 
               <md-card-content>
-                <md-layout md-gutter="8">
-                    <md-layout md-flex="10">
+                <div class="row">
+                    <div class="col-md-1">
                         <md-list class="md-dense">
                             <md-list-item>
-                                <md-button class="md-icon-button md-list-action" @click="show = 'description'" :disabled="show === 'description'"> <md-icon>description</md-icon> </md-button>
+                                <md-button md-theme="button" class="md-raised md-primary md-icon-button md-list-action" @click="show = 'description'" :disabled="show === 'description'"> <md-icon>description</md-icon> </md-button>
                             </md-list-item>
                             <md-list-item>
-                                <md-button class="md-icon-button md-list-action" @click="openDialog('commentDialog')" :disabled="show === 'comments'"> <md-icon>insert_comment</md-icon> </md-button>
+                                <md-button md-theme="button" class="md-raised md-primary md-icon-button md-list-action" @click="openDialog('commentDialog')" :disabled="show === 'comments'"> <md-icon>insert_comment</md-icon> </md-button>
                             </md-list-item>
                             <md-list-item>
-                                <md-button class="md-icon-button md-list-action" @click="show = 'history'" :disabled="show === 'history'"> <md-icon>history</md-icon> </md-button>
+                                <md-button md-theme="button" class="md-raised md-primary md-icon-button md-list-action" @click="show = 'history'" :disabled="show === 'history'"> <md-icon>history</md-icon> </md-button>
                             </md-list-item>
                             <md-list-item>
-                                <md-button class="md-icon-button md-list-action" @click="show = 'edit'" :disabled="show === 'edit'"> <md-icon>mode_edit</md-icon> </md-button>
+                                <md-button md-theme="button" class="md-raised md-primary md-icon-button md-list-action" @click="show = 'edit'" :disabled="show === 'edit'"> <md-icon>mode_edit</md-icon> </md-button>
                             </md-list-item>
                         </md-list>
 
-                    </md-layout>
-                    <md-layout md-flex="60">
+                    </div>
+                    <div class="col-md-7">
 
-                        <div v-if="show === 'description'" v-on:mouseup="getHighlighted()" class="description">
-                            <div v-html="data.description" :id="'desc_' + data.id"></div>
+                        <div v-if="show === 'description'">
+                            <div v-on:mouseup="getHighlighted()"" v-html="data.description" :id="'desc_' + data.id" class="description"></div>
+
+                            <list-files :el="el"></list-files>
                         </div>
 
                         <div v-if="show === 'history'">
@@ -52,8 +54,8 @@
                             <list-form :el="data" @update="onElementUpdate" method="PUT" :action="'/api/lists/' + data.id"></list-form>
                         </div>
 
-                    </md-layout>
-                    <md-layout md-flex="30">
+                    </div>
+                    <div class="col-md-4">
 
                         <md-subheader>Kommentare</md-subheader>
 
@@ -64,7 +66,7 @@
 
                         </md-card>
 
-                        <md-card class="md-flex-100" md-theme="comment_card" v-for="comment in comments">
+                        <md-card :class="{new: comment.__new}" md-theme="comment_card" v-for="comment in comments">
                           <md-card-header>
                             <div class="md-title">{{comment.by_user.name}}</div>
                             <div class="md-subhead">Am: {{comment.created_at}} (Für Version {{comment.version}})</div>
@@ -72,28 +74,39 @@
 
                           <md-card-content>
                             <div class="md-body-1">{{comment.content}}</div>
+
+                            <md-subheader>Antworten</md-subheader>
+                            <div v-for="reply in comment.replies" :class="getReplyClass(reply)">
+                                <div class="md-caption">von {{reply.by_user.name}} am {{reply.created_at}}</div>
+                                <div class="md-body-1">{{reply.content}}</div>
+                                <hr/>
+                            </div>
+
                           </md-card-content>
 
+                          <md-card-actions>
+                              <md-button md-theme="button" class="md-icon-button md-raised md-primary" @click="reply(comment.id)"> <md-icon>reply</md-icon> </md-button>
+                          </md-card-actions>
                           <md-card-actions v-if="hasCommentFooter(comment) === true">
-                            <md-button @click="getCommentedMark(comment)"><md-icon>search</md-icon></md-button>
+                            <md-button  @click="getCommentedMark(comment)"><md-icon>search</md-icon></md-button>
                             <span class="md-caption"><span class="marked-text">Markierter Text:</span> {{comment.position.description.text}}</span>
                           </md-card-actions>
                         </md-card>
 
-                    </md-layout>
+                    </div>
 
-                </md-layout>
+                </div>
 
 
                 <md-dialog ref="commentDialog">
-                  <md-dialog-title>Kommentiere Textabschnitt</md-dialog-title>
+                  <md-dialog-title>{{commentDialogTitle}}</md-dialog-title>
 
                   <md-dialog-content>
                     <comment-form @create="onCommentCreated" :el="commentObj" method="POST" action="/api/comments/"></comment-form>
                   </md-dialog-content>
 
                   <md-dialog-actions>
-                    <md-button class="md-primary" @click="closeDialog('commentDialog')">X</md-button>
+                    <md-button md-theme="button" class="md-raised md-warning" @click="closeDialog('commentDialog')">X</md-button>
                   </md-dialog-actions>
                 </md-dialog>
               </md-card-content>
@@ -118,7 +131,10 @@
                 historyDisplay:true,
                 allComments: this.el.comments,
                 data: this.el,
-                comments: []
+                comments: [],
+                replies: {},
+                updated: false,
+                commentDialogTitle: 'Kommentiere Textabschnitt'
             }
         },
 
@@ -135,7 +151,7 @@
         },
 
         watch: {
-            'show': function(newVal, oldVal) {
+            show: function(newVal, oldVal) {
                this.recalculateComments()
             }
         },
@@ -152,11 +168,43 @@
                 }
             }
         },
+
+        mounted() {
+            Echo.private(`lists.${this.el.id}`)
+                .listen('ListsUpdated', (e) => {
+                    this.data = e.lists
+                    this.updated = true
+
+                })
+
+            Echo.private(`comments.${this.el.id}`)
+                .listen('CommentCreated', (e) => {
+                    let comment = e.comment
+
+                    comment['__new'] = true
+
+                    if (comment.reply_to === undefined || comment.reply_to === null || comment.reply_to === '') {
+                        this.allComments.push(comment)
+                    }
+                    else {
+                        this.replies[comment.reply_to] = comment;
+                    }
+
+                    this.recalculateComments()
+                })
+        },
+
         methods: {
             recalculateComments() {
                 if (this.show === 'description') {
                     this.comments = new Array
-                    this.allComments.forEach( (comment) => {
+                    this.allComments.forEach( comment => {
+                        if (this.replies[comment.id] !== undefined) {
+                            comment.replies.push(this.replies[comment.id])
+
+                            this.$delete(this.replies, comment.id)
+                        }
+
                         if (this.el.version === comment.version) {
                             this.comments.push(comment)
                         }
@@ -180,7 +228,15 @@
             },
 
             onCommentCreated(data) {
-                this.allComments.push(data)
+                data['__new'] = true
+
+                if (data.reply_to === undefined || data.reply_to === null || data.reply_to === '') {
+                    this.allComments.push(data)
+                }
+                else {
+                    this.replies[data.reply_to] = data;
+                }
+
                 this.recalculateComments()
 
                 this.closeDialog('commentDialog')
@@ -206,7 +262,21 @@
                 });
             },
 
+            reply(commentId) {
+                this.$set(this.commentObj, 'reply_to', commentId)
 
+                this.openDialog('commentDialog')
+            },
+
+            getReplyClass(reply) {
+                let cssClass = 'row col-md-offset-1'
+
+                if (reply['__new'] === true) {
+                    cssClass = cssClass + ' new'
+                }
+
+                return cssClass
+            },
 
             getHighlighted() {
                 let selection = document.getSelection()
@@ -262,6 +332,8 @@
 
             },
             closeDialog(ref) {
+                this.$delete(this.commentObj, 'reply_to')
+
                 if (this.$refs[ref] !== undefined) {
                     this.$refs[ref].close();
                 }
@@ -301,8 +373,33 @@
     color: #000;
 }
 
-.description {
-    padding-left: 40px;
+@-webkit-keyframes blink {
+    from, to {
+        border-color: green
+    }
+    50% {
+        border-color: transparent
+    }
+}
+@keyframes blink {
+    from, to {
+        border-color: green
+    }
+    50% {
+        border-color: transparent
+    }
+}
+
+.new, .updated{
+    border:1px solid transparent;
+
+    animation-name: blink;
+    animation-duration: 4s;
+    animation-iteration-count: 3;
+
+    -webkit-animation-name: blink;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-iteration-count: 3;
 }
 
 </style>

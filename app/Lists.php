@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Scopes\Accessable;
+use App\Scopes\ByTenant;
 use App\Scopes\OrderByWeight;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -21,7 +22,7 @@ class Lists extends Model
      * @var array
      */
     protected $fillable = [
-        'token', 'title', 'description', 'created', 'updated', 'version', 'weight', 'type', 'data', 'tenants_id'
+        'token', 'title', 'description', 'version', 'weight', 'type', 'data', 'tenants_id', 'created', 'updated'
     ];
 
     /**
@@ -54,6 +55,8 @@ class Lists extends Model
         static::addGlobalScope(new OrderByWeight());
 
         static::addGlobalScope(new Accessable());
+
+        static::addGlobalScope(new ByTenant());
     }
 
     /**
@@ -66,7 +69,12 @@ class Lists extends Model
 
     public function comments(): HasMany
     {
-        return $this->hasMany(Comment::class, 'lists_id');
+        return $this->hasMany(Comment::class, 'lists_id')->root();
+    }
+
+    public function files(): HasMany
+    {
+        return $this->hasMany(ListFile::class, 'lists_id');
     }
 
     /**
@@ -81,5 +89,10 @@ class Lists extends Model
         }
 
         return $query;
+    }
+
+    public function getDirectoryName()
+    {
+        return 'list_files/' . snake_case($this->token);
     }
 }

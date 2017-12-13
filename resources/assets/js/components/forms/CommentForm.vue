@@ -7,7 +7,7 @@
                 <md-textarea v-model="obj.content"></md-textarea>
             </md-input-container>
 
-            <md-button @click="onFormSubmit()">
+            <md-button md-theme="button" class="md-raised md-primary" @click="onFormSubmit()">
                 Speichern
             </md-button>
         </fieldset>

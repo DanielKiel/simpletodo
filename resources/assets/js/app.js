@@ -23,6 +23,11 @@ Vue.material.registerTheme({
         warn: 'red',
         background: 'white'
     },
+    button: {
+        primary: 'lime',
+        warning: 'red',
+        accent: 'teal'
+    },
     nav: {
         primary: 'white'
     },
@@ -31,11 +36,18 @@ Vue.material.registerTheme({
     }
 });
 
+let VueQuillEditor = require('vue-quill-editor');
 
 
-window.flash = function(message, type = 'primary') {
-    window.ui.showNotification(message, type)
-    //window.events.$emit('flash', message)
+// mount with global
+Vue.use(VueQuillEditor);
+
+
+
+window.flash = function(message, type = 'primary', title = 'Important message') {
+    //window.ui.showNotification(message, type)
+
+    window.events.$emit('flash', message)
 }; // flash new message
 
 
@@ -47,13 +59,15 @@ window.flash = function(message, type = 'primary') {
 
 Vue.component('vmenu', require('./components/Menu.vue'));
 Vue.component('flash', require('./components/Flash.vue'));
-Vue.component('list', require('./components/List.vue'));
+Vue.component('list', require('./components/list/List.vue'));
 Vue.component('vlink', require('./components/Link.vue'));
 Vue.component('grid', require('./components/Grid.vue'));
 Vue.component('vdialog', require('./components/Dialog.vue'));
 
-Vue.component('list-el-default', require('./components/ListElement_Default.vue'));
+Vue.component('list-el-default', require('./components/list/ListElement_Default.vue'));
 Vue.component('list-form', require('./components/forms/ListElementForm.vue'));
+Vue.component('list-files', require('./components/list/ListFile.vue'));
+Vue.component('share', require('./components/list/Share.vue'));
 
 Vue.component('comment-form', require('./components/forms/CommentForm.vue'));
 
@@ -75,5 +89,15 @@ Vue.component(
 );
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    mounted: function () {
+        this.routes = JSON.parse(this.$el.attributes.routes.value);
+    },
+
+    data: function() {
+        return {
+            routes: {}
+        };
+    }
 });
+

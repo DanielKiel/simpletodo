@@ -6,8 +6,12 @@
                     <md-toolbar>
                         <h1 class="md-title">Liste: {{token}}</h1>
 
-                        <md-button class="md-icon-button md-fab md-mini" @click="openDialog('elDialog')">
-                          <md-icon>control_point</md-icon>
+                        <md-button md-theme="button" class="md-icon-button md-primary md-raised" @click="openDialog('shareDialog')">
+                          <md-icon>visibility</md-icon>
+                        </md-button>
+
+                        <md-button md-theme="button" class="md-icon-button md-primary md-raised" @click="openDialog('elDialog')">
+                          <md-icon>add</md-icon>
                         </md-button>
                     </md-toolbar>
                     <md-list>
@@ -36,6 +40,16 @@
             <md-button class="md-primary" @click="closeDialog('elDialog')">X</md-button>
           </md-dialog-actions>
         </md-dialog>
+
+        <md-dialog ref="shareDialog">
+          <md-dialog-content>
+            <share :token="token"></share>
+          </md-dialog-content>
+
+          <md-dialog-actions>
+            <md-button class="md-primary" @click="closeDialog('shareDialog')">X</md-button>
+          </md-dialog-actions>
+        </md-dialog>
     </md-layout>
 
 </template>
@@ -62,6 +76,19 @@
 
         created() {
             this.fetchData()
+        },
+
+        mounted() {
+            Echo.private(`lists.${this.token}`)
+                .listen('ListsCreated', (e) => {
+
+                    if (this.data.data.length < this.data.per_page) {
+                        this.data.data.push(e.lists)
+                        this.$forceUpdate()
+                    }
+
+                    this.data.total = this.data.total + 1
+                })
         },
 
         methods: {

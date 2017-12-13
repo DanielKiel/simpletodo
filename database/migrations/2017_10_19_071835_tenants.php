@@ -42,6 +42,12 @@ class Tenants extends Migration
 
                 $table->foreign('tenants_id')->references('id')->on('tenants');
             });
+
+            Schema::table('shared_lists', function(Blueprint $table) {
+                $table->integer('tenants_id')->unsigned();
+
+                $table->foreign('tenants_id')->references('id')->on('tenants');
+            });
         }
         catch (\Exception $e) {
             dump($e->getMessage());
@@ -66,6 +72,10 @@ class Tenants extends Migration
 
             Schema::table('lists_history', function(Blueprint $table) {
                 $table->dropForeign('lists_history_tenants_id_foreign');
+            });
+
+            Schema::table('shared_lists', function(Blueprint $table) {
+                $table->dropForeign('shared_lists_tenants_id_foreign');
             });
         }
         catch (\Exception $e) {

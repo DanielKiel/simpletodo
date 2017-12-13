@@ -11,6 +11,37 @@
 |
 */
 
-Broadcast::channel('App.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+Broadcast::channel('lists.{token}', function ($user, $token) {
+
+    return true;
+    //@TODO implement some logic here later
+
+});
+
+Broadcast::channel('lists.{id}', function ($user, $id) {
+
+    return true;
+    //@TODO implement some logic here later
+
+});
+
+Broadcast::channel('comments.{relatedListsId}', function ($user, $relatedListsId) {
+
+    return true;
+    //@TODO implement some logic here later
+
+});
+
+Broadcast::channel('listFiles.{listsId}', function ($user, $listsId) {
+
+    return true;
+    //@TODO implement some logic here later
+
+});
+
+Broadcast::channel('listFileUpdated.{listsId}', function ($user, $listsId) {
+
+    return true;
+    //@TODO implement some logic here later
+
 });

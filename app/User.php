@@ -2,9 +2,11 @@
 
 namespace App;
 
+use App\Scopes\ByTenant;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
@@ -42,6 +44,24 @@ class User extends Authenticatable
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class, 'by');
+    }
+
+    public function shared(): HasMany
+    {
+        return $this->hasMany(SharedList::class, 'to');
+    }
+
+    public function scopeByTenant($query)
+    {
+        $user = Auth::user();
+
+        if (! $user instanceof User) {
+            return $query;
+        }
+
+        $tenantId = Auth::user()->tenants_id;
+
+        return $query->where('tenants_id', $tenantId);
     }
 
     /**

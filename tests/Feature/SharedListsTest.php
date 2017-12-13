@@ -83,6 +83,9 @@ class SharedListsTest extends TestCase
             'token' => 'myGroup'
         ]);
 
+        //not allow remove from sharing cause this user created a list entry
+        $this->assertFalse( SharedList::unshare('myGroup', $this->user_A->id));
+
         //userB now wants to see one of them
         Passport::actingAs($this->user_B);
 
@@ -109,6 +112,8 @@ class SharedListsTest extends TestCase
         //now make it shared
         SharedList::share('myGroup', $this->user_B->id);
 
+        $this->assertEquals(1, $this->user_B->fresh()->shared()->count());
+
         //reading
         $result = $this->get('/api/lists/' . $list1->id);
 
@@ -132,20 +137,17 @@ class SharedListsTest extends TestCase
 
     public function setupUserScenario()
     {
-        $tenant = Tenant::create(['name' => 'Demo']);
 
         $this->user_A = User::create([
             'name' => 'UserA',
             'email' => 'userA@publicare.de',
             'password' => bcrypt('password'),
-            'tenants_id' => $tenant->id,
         ]);
 
         $this->user_B = User::create([
             'name' => 'UserB',
             'email' => 'userB@publicare.de',
             'password' => bcrypt('password'),
-            'tenants_id' => $tenant->id,
         ]);
     }
 }

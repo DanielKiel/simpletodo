@@ -20,3 +20,5 @@ later:
 
 - make it multi tenant - basic logic is integrated, policies and stuff have to be handled later
 - make it featurable (a tenant can have enabled a feature like: calendar where the list can be placed with i calendar, stateable where the list entries can have states like planned, opened, etc)
+
+

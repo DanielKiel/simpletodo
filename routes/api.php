@@ -19,6 +19,16 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::middleware(['api','auth:api'])->resource('lists', 'API\ListsController');
 
+Route::middleware(['api','auth:api'])->resource('list-files', 'API\ListFilesController');
+
 Route::middleware(['api','auth:api'])->resource('comments', 'API\CommentsController');
 
+Route::middleware(['api','auth:api'])->resource('tenants', 'API\TenantsController');
+
+Route::middleware(['api','auth:api'])->resource('users', 'API\UsersController');
+
 Route::middleware(['api','auth:api'])->get('/tokens', 'API\ListsController@tokens')->name('api.tokens');
+
+Route::middleware(['api','auth:api'])->get('/share/{token}/{userId}', 'API\ListsController@share')->name('api.share');
+
+Route::middleware(['api','auth:api'])->get('/unshare/{token}/{userId}', 'API\ListsController@unshare')->name('api.unshare');

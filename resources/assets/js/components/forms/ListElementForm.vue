@@ -1,7 +1,7 @@
 <template>
     <div>
         <form :method="method" :action="action">
-            <md-input-container v-if="el.token === '' || el.token === undefined ">
+            <md-input-container v-if="el.token === '' || el.token === undefined || el.token === null">
                 <label>Name der Liste</label>
                 <md-input v-model="el.token" required></md-input>
             </md-input-container>
@@ -16,11 +16,13 @@
             </md-input-container>
 
             <md-input-container>
-                <label>Beschreibung</label>
-                <md-textarea v-model="el.description"></md-textarea>
+                <quill-editor v-model="el.description"
+                                ref="myQuillEditor"
+                                :options="editorOption">
+                </quill-editor>
             </md-input-container>
 
-            <md-button @click="onFormSubmit()">
+            <md-button @click="onFormSubmit()" md-theme="button" class="md-raised md-primary">
                 Speichern
             </md-button>
 
@@ -38,12 +40,18 @@
         ],
         data () {
             return {
-                errors: []
+                errors: [],
+                editorOption: {
+                  // some quill options
+                },
+                newList: false
             }
         },
 
         created() {
-
+            if (this.el.token === '' || this.el.token === undefined || this.el.token === null) {
+                this.newList = true
+            }
         },
 
         methods: {
@@ -58,6 +66,10 @@
 
                     if (this.method === 'POST') {
                         this.$emit('create', response.data)
+
+                        if (this.newList === true) {
+                            window.location.href = '/backend/list/' + encodeURI(response.data.token)
+                        }
                     }
 
                     if (this.method === 'PUT') {

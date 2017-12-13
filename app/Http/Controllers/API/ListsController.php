@@ -5,7 +5,9 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ListsValidation as FormRequest;
 use App\Lists;
+use App\SharedList;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ListsController extends Controller
 {
@@ -15,7 +17,9 @@ class ListsController extends Controller
      */
     public function tokens(Request $request)
     {
-        return Lists::withoutGlobalScopes()->select('token')->groupBy('token')->paginate($request->input('per_page', 15));
+        return Lists::withoutGlobalScopes()
+            ->where('tenants_id', Auth::user()->tenants_id)
+            ->select('token')->groupBy('token')->paginate($request->input('per_page', 15));
     }
 
     /**
@@ -102,6 +106,21 @@ class ListsController extends Controller
         $this->authorize('delete', $list);
 
         $result = $list->delete();
+
+        return  [
+            'success' => (bool) $result
+        ];
+    }
+
+    public function share($token, $userId)
+    {
+        return SharedList::share($token, $userId);
+    }
+
+    public function unshare($token, $userId)
+    {
+
+        $result = SharedList::unshare($token, $userId);
 
         return  [
             'success' => (bool) $result
